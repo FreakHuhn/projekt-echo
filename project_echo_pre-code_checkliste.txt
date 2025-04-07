@@ -1,0 +1,80 @@
+
+✅ Project Echo – Pre-Code Checkliste
+
+Diese Liste dient als finaler Überblick über die nötigen Vorbereitungen vor dem Programmierstart.
+
+---
+
+📁 1. Projektstruktur & Setup
+- [ ] Hauptordnerstruktur erstellt (z. B. /bot, /data, /assets, /modules)
+- [ ] Virtuelle Python-Umgebung eingerichtet
+- [ ] requirements.txt oder Pipfile vorbereitet
+
+---
+
+🔐 2. Secrets & Keys
+- [ ] .env-Datei erstellt für API-Keys:
+      - OPENAI_API_KEY
+      - DISCORD_TOKEN
+      - IMGFLIP_USERNAME (optional)
+      - IMGFLIP_PASSWORD (optional)
+- [ ] dotenv in Projekt eingebunden
+- [ ] .env in .gitignore (falls Versionierung)
+
+---
+
+🧠 3. GPT-Konfiguration
+- [ ] System-Prompt für Echo vorbereitet (z. B. Tonfall, Verhalten)
+- [ ] Entscheidung: GPT-3.5 oder GPT-4 (Turbo)
+- [ ] Tokenbegrenzung & Sicherheit im Blick
+
+---
+
+🧩 4. Skill-Modulplanung
+- [ ] Welche Skills werden zum Start aktiv?
+      - !echo
+      - !gamequiz
+      - !invite
+      - !meme
+- [ ] Struktur der Skill-Dateien (z. B. gamequiz.py, echo.py, etc.)
+- [ ] Modulares Importsystem geplant
+
+---
+
+🧪 5. Test- & Logging-Konzept
+- [ ] Fehlerbehandlung implementieren
+- [ ] Testserver bei Discord eingerichtet
+- [ ] Logging-Datei oder Konsole-Log für:
+      - Fehler
+      - GPT-Antworten
+      - Sessionstart/-ende
+- [ ] Optionale Metriken: API-Nutzung, Useraktivität
+
+---
+
+📊 6. Daten- & Kontextspeicherung
+- [ ] JSON oder SQLite für:
+      - Spielzeiten
+      - Quizpunkte
+      - Benutzerverlauf
+- [ ] Zugriffsfunktionen und Speicherorte definiert
+
+---
+
+🧪 7. Beispieltests & Startbefehle
+- [ ] !ping / !help funktioniert
+- [ ] !echo gibt GPT-Antwort zurück
+- [ ] !clear resettet Bot-Modus
+- [ ] Echo startet ohne Fehler im Channel
+
+---
+
+🔄 8. Deployment & Updates
+- [ ] Lokaler Start funktioniert
+- [ ] Hosting-Plan vorbereitet (Replit, VPS, o. ä.)
+- [ ] Automatische Neustarts möglich
+- [ ] Versions- oder Feature-Tracking geplant
+
+---
+
+Diese Checkliste dient zur Übergabe vom Konzept in die technische Umsetzung.

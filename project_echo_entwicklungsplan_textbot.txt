@@ -1,0 +1,42 @@
+
+🧱 Entwicklungsplan 1 – Stationärer Discord-Bot (Echo als textgesteuerter Assistent)
+
+🎯 Ziel:
+Ein textbasierter, stationärer Discord-Bot, der dauerhaft verfügbar ist, auf Chatbefehle reagiert und modulweise erweiterbar ist.
+
+---
+
+🪜 Entwicklungsstufen:
+
+🔹 Stufe 1 – Basisfunktion
+- !echo <frage>: Antwort durch GPT
+- !help: Übersicht der Befehle
+- Verbindung zu Discord-Server & einfache Textantworten im Channel
+
+🔹 Stufe 2 – Skillsystem modularisieren
+- Skills wie !wiki, !build, !tip als eigene Commands
+- Intern in Python als Funktionen oder CommandHandler-Struktur
+
+🔹 Stufe 3 – Unterhaltung & Fun
+- !meme, !quote, !roast
+- GPT-generierte Witze oder Antworten, Zufallsantworten
+
+🔹 Stufe 4 – Minigames & Challenges
+- !quiz, !roll, !loot
+- GPT-basierte Logik oder zufällige Elemente
+
+🔹 Stufe 5 – Speicher & Personalisierung
+- Nutzerinfos speichern (z. B. Lieblingsspiel, Nickname)
+- Echo merkt sich Vorlieben & kontextuelle Infos (JSON/SQLite)
+
+🔹 Stufe 6 – Automatisierung & Idle Management
+- Auto-Leave bei Inaktivität im Voice-Channel
+- Automatische Antworten bei Trigger-Wörtern im Textchat
+
+🔹 Stufe 7 – Admin-Tools
+- !uptime, !debug, !clear
+- Echo hilft beim Server-Management
+
+🔹 Stufe 8 – Live-Status & Hosting
+- Dauerhaft gehostet auf VPS, Raspberry Pi oder Cloud
+- Live-Überwachung von Tokenverbrauch & Logs

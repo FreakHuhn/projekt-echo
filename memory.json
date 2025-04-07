@@ -1,0 +1,43 @@
+{
+    "users": {
+        "default": {
+            "mood": "neutral",
+            "session_state": {
+                "letzter_befehl": "!echo hallo",
+                "modus": "gpt"
+            },
+            "history": [
+                {
+                    "speaker": "user",
+                    "message": "!echo hallo",
+                    "timestamp": "2025-04-06 13:33:27"
+                },
+                {
+                    "speaker": "echo",
+                    "message": "Hallo! Wie kann ich dir heute helfen?",
+                    "timestamp": "2025-04-06 13:33:28"
+                },
+                {
+                    "speaker": "user",
+                    "message": "wie spät ist es?",
+                    "timestamp": "2025-04-06 13:33:35"
+                },
+                {
+                    "speaker": "echo",
+                    "message": "Entschuldigung, aber als Bot habe ich keinen direkten Zugriff auf Echtzeitinformationen wie die aktuelle Uhrzeit. Du kannst jedoch die Uhrzeit leicht überprüfen, indem du auf dein Gerät oder eine beliebige Internetuhr schaust.",
+                    "timestamp": "2025-04-06 13:33:37"
+                },
+                {
+                    "speaker": "user",
+                    "message": "was ist ein schwarzes loch?",
+                    "timestamp": "2025-04-06 13:33:58"
+                },
+                {
+                    "speaker": "echo",
+                    "message": "Ein Schwarzes Loch ist ein astronomisches Objekt, das eine so starke Gravitation besitzt, dass nichts, nicht einmal Licht, seiner Anziehungskraft entkommen kann. Schwarze Löcher entstehen, wenn massereiche Sterne am Ende ihres Lebens kollabieren und ihre Masse auf einen winzigen Punkt komprimiert wird, der als Singularität bezeichnet wird. Sie sind für ihr charakteristisches Merkmal bekannt, dass sie alles in ihrer Nähe verschlingen, einschließlich Licht.",
+                    "timestamp": "2025-04-06 13:33:59"
+                }
+            ]
+        }
+    }
+}

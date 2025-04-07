@@ -1,0 +1,83 @@
+
+📦 Projekt Echo – Schritte zum Discord-Bot
+
+Ziel: Den bestehenden CLI-Code von Project Echo in einen Discord-Bot umwandeln
+
+--------------------------------------------------
+1️⃣ Vorbereitung
+
+- Stelle sicher, dass folgende Python-Pakete installiert sind:
+  - openai
+  - discord.py
+  - python-dotenv
+- Lege eine .env-Datei mit folgendem Inhalt an:
+  OPENAI_API_KEY=dein_key
+  DISCORD_TOKEN=dein_discord_token
+
+--------------------------------------------------
+2️⃣ Discord-Bot registrieren
+
+- Erstelle einen Bot unter https://discord.com/developers/applications
+- Aktiviere unter "Bot" die Message Content Intent
+- Kopiere den Bot-Token und speichere ihn in deiner .env-Datei
+
+--------------------------------------------------
+3️⃣ Bot-Code (bot.py)
+
+Beispielcode:
+
+import discord
+from discord.ext import commands
+from logic import process_input
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+TOKEN = os.getenv("DISCORD_TOKEN")
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = commands.Bot(command_prefix="!", intents=intents)
+
+@bot.event
+async def on_ready():
+    print(f"{bot.user} ist bereit!")
+
+@bot.event
+async def on_message(message):
+    if message.author == bot.user:
+        return
+
+    response = process_input(message.content)
+    await message.channel.send(response)
+
+bot.run(TOKEN)
+
+--------------------------------------------------
+4️⃣ Testphase
+
+- Starte den Bot lokal mit: python bot.py
+- Lade den Bot per OAuth2-Link ein:
+  https://discord.com/oauth2/authorize?client_id=DEINE_ID&scope=bot&permissions=268438528
+- Teste: !help, !echo, !gamequiz, !antwort
+
+--------------------------------------------------
+5️⃣ Optional: Hosting (später)
+
+- Nutze Dienste wie Railway, Replit, PythonAnywhere oder eigenen Server
+- Nutze screen, pm2 oder systemd zum Prozess-Management
+
+--------------------------------------------------
+6️⃣ Ordnerstruktur
+
+project_echo/
+├── bot.py
+├── gpt.py
+├── quiz.py
+├── logic.py
+├── memory.json
+├── .env
+├── requirements.txt
+└── /skills, /data, /modules (optional)
+

@@ -1,0 +1,54 @@
+
+🧠 Projekt Echo – Fortschritte der Designgestaltung
+
+📌 Allgemeine Ausrichtung:
+- Project Echo wird als modularer Discord-Bot entwickelt.
+- Startphase: textgesteuerter Bot mit GPT-API-Anbindung.
+- Ziel: Funktional, aber mit Charakter und Raum für Persönlichkeit.
+- Skalierbarkeit ist vorgesehen: Sprachsteuerung, Kontext, Voice-Interaktion in späteren Phasen.
+
+---
+
+💬 Benutzerführung & Interaktion:
+- Echo reagiert ausschließlich auf definierte Chatbefehle (z. B. !echo, !tip, !wiki).
+- !echo ist der zentrale Befehl zur freien GPT-Kommunikation.
+- !clear bricht alle laufenden Aktionen ab und setzt Echo in den Chatbot-Modus zurück.
+- Geplante Benutzerführung umfasst:
+  - Hilfebefehle (!help, !commands)
+  - Smarte Vorschläge bei falschen Eingaben
+  - Vorschläge zur Vervollständigung oder Korrektur
+  - Optional: !silentinvite für diskrete Interaktionen
+
+---
+
+⚙️ Geplante & besprochene Funktionen (Auszug):
+
+1. `!gamequiz "Spiel"`:
+   - GPT generiert Quizfrage mit Antwortmöglichkeiten.
+   - Multiplayer: `!gamequiz "Spiel" 3 @User1 @User2` → Echo wartet auf Antworten mehrerer User und wertet aus.
+
+2. `!gametime "Spiel" start/end`:
+   - Startet und beendet eine Spiel-Zeitmessung.
+   - Ausgabe der Spielzeit + optionale GPT-Kommentare.
+
+3. `!invite @User [Nachricht]`:
+   - Echo lädt einen oder mehrere User per DM in deinen Voice-Channel ein.
+   - Option: `!silentinvite` für diskrete Einladungen ohne Channel-Output.
+
+4. `!meme @User <witziger Moment>`:
+   - GPT generiert Meme-Beschreibung (Top-/Bottomtext).
+   - Optionaler Bild-Output über imgflip API geplant.
+
+---
+
+📌 Designprinzipien:
+- Kontrollierte Interaktion: Echo spricht nur, wenn er soll.
+- Benutzerfreundlich und klar strukturiert.
+- Humorvoll, aber nicht aufdringlich.
+- Erweiterbar durch eigene Skills & Commands.
+- Skalierbar für spätere Sprach- & Kontextfunktionen.
+
+---
+
+📁 Notiz:
+Alle Ideen sind modular gedacht und können in späteren Sessions weiterentwickelt oder aktiviert werden.

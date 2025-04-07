@@ -1,0 +1,53 @@
+
+📬 Skill: !invite & !silentinvite
+
+Kategorie: Soziales
+Beschreibung:
+Beide Befehle ermöglichen es, Discord-Mitglieder in den Voice-Channel des Aufrufenden einzuladen. Sie unterscheiden sich lediglich in der Sichtbarkeit: 
+- `!invite` bestätigt die Aktion im Chat (ohne Pings).
+- `!silentinvite` agiert vollständig still und schreibt nur DMs.
+
+Unterstützte Eingaben (beide Befehle):
+- @Mentions: `!invite @User`
+- Namen in Anführungszeichen: `!invite "Username"`
+- Personalisierte Nachricht: `"Nachricht"` als letztes Argument
+- Kombination: `!invite "Username" "Komm leise zocken!"`
+
+Beispiele:
+- `!invite @Muggion`
+- `!invite "Muggion"`
+- `!invite @Muggion "Zeit zum Helldiven!"`
+- `!silentinvite "Muggion" "Komm in den VC, still & heimlich"`
+
+Verhalten:
+- Echo sucht gezielt in der Memberliste nach Username oder Displayname
+- Bei mehreren Treffern listet Echo Optionen ohne Pings: 
+  → "Mehrere Namen passen: Muggion, Muggix, Muggy."
+- Bei eindeutigem Treffer wird eine Einladung per DM verschickt
+- Bei `!invite` erfolgt zusätzlich eine **stille Channel-Meldung ohne Ping**:
+  → "Ich habe eine Einladung verschickt."
+  → "Einladungen verschickt: 2"
+  → "Muggion wurde eingeladen, sich der Party anzuschließen."
+- Bei `!silentinvite` erfolgt **keinerlei Channel-Ausgabe**
+
+Fehlerbehandlung:
+- Kein Voice-Channel? → "Ich kann niemanden einladen, wenn du nicht im VC bist."
+- User nicht auffindbar? → "Ich finde niemanden namens 'XYZ'." (keine Pingmeldung)
+- DMs deaktiviert? → Private Rückmeldung: "Konnte 'XYZ' nicht erreichen – DMs deaktiviert?"
+
+Speicherbeispiel:
+{
+  "last_skill": {
+    "name": "!invite",
+    "invited": ["Muggion"],
+    "message": "Zeit zum Helldiven!",
+    "mode": "silent",
+    "channel": "#helldive"
+  }
+}
+
+GPT-Unterstützung: ❌ Nein
+Speicherzugriff: ✅ Optional (für Verlauf)
+Multiplayer-fähig: ✅ Ja
+Benutzerfreundlich: ✅ Hoch
+Ping-Spam-Gefahr: ❌ Praktisch ausgeschlossen

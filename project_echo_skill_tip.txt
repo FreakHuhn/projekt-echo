@@ -1,0 +1,42 @@
+
+🎮 Skill: !tip
+
+Kategorie: Gaming
+Beschreibung:
+Gibt clevere, hilfreiche oder witzige Tipps zu einem Spiel – angepasst an Situation, Kontext oder Spieler. Unterstützt verschiedene Modi für allgemeine, kontextspezifische oder humorvolle Tipps.
+
+Eingabevarianten:
+- !tip <spiel> → Allgemeiner Ladebildschirm-Tipp zum Spiel
+- !tip <spiel> "blabla" → Kontextbezogener Tipp zum Spiel
+- !tip noob <spiel> @user → Humorvoller, leicht sarkastischer Noob-Tipp an einen bestimmten User
+
+Beispiele:
+!tip hollow knight
+→ "Wände können mehr verraten, als man denkt. Achte auf ihre Geräusche."
+
+!tip dark souls "boss fight"
+→ "Roll nicht wie wild – beobachte erst, dann weiche aus. Timing rettet Leben."
+
+!tip noob apex @muggion
+→ "@muggion, beim nächsten Match: Einfach mal schießen, bevor du lootest 😉"
+
+GPT-Unterstützung: ✅ (für Inhalt & Tonalität)
+Speicherzugriff: ✅ (merkt sich Spiel, Kontext, Zieluser, letzter Tipp)
+Multiplayer-fähig: 🔸 (nur bei gezieltem @user)
+Antwortvielfalt: Hoch (je nach GPT-Prompt, Tonfall und Stil)
+
+Memory-Beispiel:
+{
+  "last_skill": {
+    "name": "!tip",
+    "game": "Apex Legends",
+    "topic": "noob",
+    "target": "@muggion",
+    "response": "Beim nächsten Match: Einfach mal schießen, bevor du lootest 😉"
+  }
+}
+
+Erweiterungsideen:
+- !tip <spiel> build → Build-Tipps
+- !tip <spiel> boss <name> → Bosskampftipps
+- !tip <spiel> random → Zufällige Fun-Facts oder Geheimtipps

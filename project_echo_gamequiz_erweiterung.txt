@@ -1,0 +1,59 @@
+
+🧠 Erweiterungsplanung – !gamequiz
+
+Ziel: Der Skill "!gamequiz" soll um die folgenden Funktionen erweitert werden:
+1. Abbrechen von Quizrunden (!gamequiz cancel)
+2. Dynamisches Multiplayer-Tracking
+3. Automatische Teilnehmererkennung
+
+--------------------------------------------------
+1️⃣ !gamequiz cancel
+- Befehl: !gamequiz cancel
+- Wirkung: Bricht die laufende Quizrunde ab
+- Echo löscht session_state["quiz"]
+- Antwortversuche nach dem Abbruch werden ignoriert
+- Rückmeldung im Channel: "Quizrunde abgebrochen."
+
+--------------------------------------------------
+2️⃣ Multiplayer-Unterstützung (manuell + automatisch)
+- Bei !gamequiz <game> @user1 @user2 werden Spieler geloggt
+- Erweiterung: Jeder User, der !antwort schickt, wird erkannt & registriert
+
+--------------------------------------------------
+3️⃣ Dynamisches Teilnehmer-Tracking (Vision)
+- Spieler werden automatisch erfasst, sobald sie antworten
+- Beispiel-Speicherung:
+
+"session_state": {
+  "quiz": {
+    "frage": "...",
+    "antworten": [...],
+    "richtig": "B",
+    "spieler": {
+      "user_id_1": {
+        "name": "Muggion",
+        "antwort": null,
+        "zeit": null
+      },
+      "user_id_2": {
+        "name": "Wayne",
+        "antwort": "C",
+        "zeit": "2025-04-01T21:01:33"
+      }
+    }
+  }
+}
+
+- Vorteile:
+  - Kein Ping nötig
+  - Kein manuelles Setup
+  - Bessere Erweiterbarkeit (Scoring, Antwortzeit etc.)
+
+--------------------------------------------------
+Zukunftsideen (optional)
+- Antwort-Timer (Countdown)
+- Punktewertung pro User
+- Score-Tracking (pro Session oder persistent)
+- Quiz-Duell-Modus
+- !quizcancel, !quizstatus, !quizscore
+

@@ -1,0 +1,44 @@
+
+🧠 Entwicklungsplan 2 – Echo als echter Gesprächspartner (sprachgesteuert & kontextfähig)
+
+🎯 Ziel:
+Ausbau von Echo zu einem immersiven, sprechenden KI-Begleiter mit echter Konversationsfähigkeit, Spracherkennung und dynamischer Persönlichkeit.
+
+---
+
+🪜 Entwicklungsstufen:
+
+🔹 Stufe 1 – TTS: Text-to-Speech
+- GPT-Antworten werden per Stimme vorgelesen
+- Nutzung von ElevenLabs, Coqui, oder Azure TTS
+- Echo spricht im Voice-Channel
+
+🔹 Stufe 2 – STT: Speech-to-Text
+- Spracheingabe wird in Text umgewandelt (z. B. mit Whisper)
+- Sprachsteuerung durch Trigger-Wörter oder Hotword („Echo?“)
+- Optional: PTT-Modus über Chat aktivieren
+
+🔹 Stufe 3 – Volldialog-System
+- Sprache → GPT → Sprache
+- Echo erinnert sich an letzte Aussagen
+- Simuliert echten Dialogfluss (inkl. Rückfragen & Reaktionen)
+
+🔹 Stufe 4 – Stimmungsanalyse & Tonalität
+- Echo erkennt Stimmung anhand Sprache/Text
+- Antwortet empathisch, witzig oder ernst je nach Lage
+
+🔹 Stufe 5 – Kontextgedächtnis über Sessions
+- Gesprächsverläufe persistieren & abrufbar machen
+- Personalisierte Reaktionen und längerer Kontext
+
+🔹 Stufe 6 – Interaktion mit Discord-Events
+- Reaktion auf Joins, Pings, Spielstart, etc.
+- Echo begrüßt neue Spieler oder kommentiert Game-Situationen
+
+🔹 Stufe 7 – Echtes Sprachinterface
+- Wie ein persönlicher KI-Assistent im VC
+- Kein „Befehl“ mehr nötig – Konversation in natürlichem Stil
+
+🔹 Stufe 8 – Optionale Persönlichkeitsschichten
+- Moduswechsel: z. B. „Ernst“, „Sarkastisch“, „Lehrer“, „Coop-Buddy“
+- Echo bekommt Charaktertiefe und Stimmlagen
