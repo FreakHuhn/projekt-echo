@@ -61,6 +61,18 @@ def prüfe_antwort(user_input, session):
 
 
 """
+QUIZ FAILS!!!!! schon ein bisschen lustig:
+🧠 GPT-Rohantwort:
+ Frage: Welches Spiel wird oft als "The Legend of Zelda" bezeichnet?
+A) Super Mario Bros
+B) The Witcher 3
+C) World of Warcraft
+D) The Legend of Zelda
+Richtige Antwort: D
+
+Obviously.... Finde den Teil "wird oft" auch ganz schön weil ich es immer "The of Legend Zelda" nenne.
+
+
 🧠 GPT-Rohantwort:
  Frage: Welches dieser Formen in Tetris wird auch als "T-Stück" bezeichnet?
 A) Quadrat
@@ -69,5 +81,5 @@ C) Z-Stück
 D) T-Stück
 Richtige Antwort: D
 
-BRUH was das für ne frage
+BRUH was das für ne frage... Gibt es überhaupt T-Stücke in Tetris?
 """
