@@ -10,3 +10,5 @@ while True:
 
     response = process_input(user_input)
     print(f"Echo: {response}")
+
+#Start der Dokumentation durch Git 12.04.2025
