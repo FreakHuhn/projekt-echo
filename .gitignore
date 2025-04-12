@@ -1,0 +1,25 @@
+# ✅ Virtuelle Umgebungen
+venv/
+.env
+
+# ✅ Python Caches
+__pycache__/
+*.py[cod]
+*.pyo
+
+# ✅ Log-Dateien & temporäre Files
+*.log
+*.tmp
+*.swp
+
+# ✅ Speicherdateien, die nicht ins Repo sollen
+memory.json
+
+# ✅ Betriebssystem-Spezifisches
+.DS_Store
+Thumbs.db
+
+# ✅ IDE/Editor-Konfigurationen (optional)
+.vscode/
+.idea/
+apibackUP.rtf
