@@ -16,14 +16,18 @@ def save_memory(memory):
     with open(MEMORY_FILE, "w") as f:
         json.dump(memory, f, indent=4)
 
-# Nachricht in History eintragen
-def log_message(user_memory, speaker, message):
+# Nachricht in History eintragen mit ID & Name
+def log_message(user_memory, speaker, message, user_id=None, user_name=None):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     entry = {
         "speaker": speaker,
         "message": message,
         "timestamp": timestamp
     }
+    if speaker == "user":
+        entry["user_id"] = user_id
+        entry["user_name"] = user_name
+
     user_memory.setdefault("history", []).append(entry)
 
 # GPT-Antwort erzeugen (Hülle für den Import)
@@ -55,7 +59,7 @@ def process_input(user_input, username="default", display_name=None):
     if not text.startswith("!"):
         return None  # Ignorieren ohne Reaktion
 
-    log_message(user_memory, "user", user_input)
+    log_message(user_memory, "user", user_input, username, user_memory.get("name"))
     response = handle_command(text, user_memory, username)
     log_message(user_memory, "echo", response)
 
@@ -66,8 +70,16 @@ def process_input(user_input, username="default", display_name=None):
 
 def handle_command(command, user_memory, username):
     session = user_memory.setdefault("session_state", {})
-    session["letzter_befehl"] = command
-    session["modus"] = "befehl"
+    
+    # ⛔️ Invite-Rückstand wegräumen, wenn kein neuer Invite-Befehl kommt
+    if command.split()[0] not in ["!invite", "!silentinvite"]:
+        session.pop("last_skill", None)
+    
+    # ❌ Passive Commands sollen nicht als letzter Befehl gelten
+    passive_commands = ["!help", "!info", "!status", "!history"]
+    if command not in passive_commands:
+        session["letzter_befehl"] = command
+        session["modus"] = "befehl"
 
     print(f"🔧 handle_command: {command} von {username}")  # Debug-Ausgabe
 
@@ -158,6 +170,12 @@ def handle_command(command, user_memory, username):
             "\n".join(frage_daten["optionen"]) +
             "\n\nAntworte mit `!antwort A/B/C/D`"
         )
+    elif command == "!gamequiz cancel":
+        session["quiz_aktiv"] = False
+        session["quiz"] = {}
+        session["quiz_antworten"] = {}
+        session["modus"] = "neutral"
+        return "🚫 Das aktuelle Quiz wurde abgebrochen."
 
     elif command.startswith("!antwort"):
         session = user_memory.get("session_state", {})
