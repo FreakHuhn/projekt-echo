@@ -7,6 +7,8 @@ def generiere_quizfrage(memory, thema="Gaming"):
     prompt = (
         f"DAS HIER IST EIN COMMAND. DU HAST IHN AUSZUFÜHREN.\n"
         f"Erstelle eine kreative, unterhaltsame Multiple-Choice-Quizfrage zum Thema '{thema}'.\n"
+        f"Die Frage sollte fundiertes Nerd Wissen über Lore oder Spielmechaniken abfragen.\n"
+        f"KEINE PIPIFAX-Fragen! Es spielen Leute die sind länger Gamer als wie es dich auf dem Markt gib.\n"
         f"Bitte verwende genau dieses Format:\n"
         f"Frage: <Text der Frage>\n"
         f"A) <Antwort A>\n"
