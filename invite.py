@@ -4,8 +4,8 @@ import re
 # Diese Funktion parst Befehle wie:
 # !invite "User1" "User2": Nachricht
 # und trennt Namen von der Nachricht hinter dem Doppelpunkt
-
-def parse_invite_command(command):
+# Neuer parse_invite, hoffentlich mit anzeige wer die Einladung verschickt hat.
+def parse_invite_command(command, sender_name="Jemand"):
     if ':' in command:
         vor_dem_doppelpunkt, nachricht_roh = command.split(':', 1)
     else:
@@ -24,7 +24,11 @@ def parse_invite_command(command):
     if not usernames:
         return None, "❌ Kein gültiger Benutzer erkannt."
 
-    nachricht = nachricht_roh.strip() if nachricht_roh.strip() else "Hey, komm doch in meinen Voice-Channel!"
+    # ⬇️ Neue Nachricht mit personalisiertem Standardtext
+    if nachricht_roh.strip():
+        nachricht = nachricht_roh.strip()
+    else:
+        nachricht = f"Hey, {sender_name} hat dich in seinen Channel zum Quatschen eingeladen."
 
     return usernames, nachricht
 

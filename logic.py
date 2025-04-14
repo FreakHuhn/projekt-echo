@@ -206,7 +206,8 @@ def handle_command(command, user_memory, username):
             return feedback + "\n(Warte noch auf andere Antworten...)"
 
     elif command.startswith("!invite") or command.startswith("!silentinvite"):
-        usernames, nachricht = parse_invite_command(command)
+        usernames, nachricht = parse_invite_command(command, sender_name=user_memory.get("name", "Ein User"))
+        
         if usernames is None:
             return nachricht
         output = ""
