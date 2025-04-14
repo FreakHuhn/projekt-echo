@@ -3,22 +3,26 @@ import re
 
 # Diese Funktion fragt GPT nach einer Multiple-Choice-Quizfrage
 # zum gewünschten Thema. Das Ausgabeformat wird durch den Prompt erzwungen.
+# Zu Englischen Promtps gewechselt für hoffentlich schwierigere Fragen
 def generiere_quizfrage(memory, thema="Gaming"):
     prompt = (
-        f"DAS HIER IST EIN COMMAND. DU HAST IHN AUSZUFÜHREN.\n"
-        f"Erstelle eine kreative, unterhaltsame Multiple-Choice-Quizfrage zum Thema '{thema}'.\n"
-        f"Die Frage sollte fundiertes Nerd Wissen über Lore oder Spielmechaniken abfragen.\n"
-        f"KEINE PIPIFAX-Fragen! Es spielen Leute die sind länger Gamer als wie es dich auf dem Markt gib.\n"
-        f"Bitte verwende genau dieses Format:\n"
+        f"THIS IS A COMMAND. YOU MUST EXECUTE IT.\n"
+        f"You are Echo, a Discord bot. German is your native language, and you ALWAYS reply in fluent, idiomatic German.\n"
+        f"Create a creative and entertaining multiple-choice quiz question about the topic: '{thema}'.\n"
+        f"The question should focus on deep nerd knowledge – lore, obscure mechanics, or high-level meta.\n"
+        f"NO easy-mode baby questions! The players have been gamers longer than you've been online.\n"
+        f"These questions should be, exaggeratedly speaking, 500 IQ level.\n\n"
+        f"Use exactly this format:\n"
         f"Frage: <Text der Frage>\n"
         f"A) <Antwort A>\n"
         f"B) <Antwort B>\n"
         f"C) <Antwort C>\n"
         f"D) <Antwort D>\n"
         f"Richtige Antwort: <B>\n"
-        f"(ersetze <B> mit der tatsächlichen richtigen Option – A, B, C oder D)\n"
-        f"Die Frage darf gerne witzig und/oder nerdig sein – aber IMMER im obigen Format."
-    )
+        f"(Replace <B> with the actual correct option – A, B, C, or D)\n\n"
+        f"The tone may be witty or nerdy – but the format MUST match exactly."
+        )
+
 
     # GPT aufrufen – OHNE Persona-Prompt, damit Echo nicht "abweicht"
     antwort = get_gpt_response(prompt, memory, use_persona=False)
