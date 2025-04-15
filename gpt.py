@@ -55,6 +55,7 @@ End of system definition
 """
 
 def get_gpt_response(prompt, memory, use_persona=True):
+    # if use_persona: system prompt aktivieren ...
     try:
         # Bereite die Messages-Liste vor – Persona nur, wenn erlaubt
         messages = []
