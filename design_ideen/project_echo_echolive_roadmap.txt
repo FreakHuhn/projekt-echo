@@ -52,7 +52,7 @@ Modularisierung & Wiederverwendbarkeit
 - Keine Abhängigkeit von memory.json → Kein Konflikt mit Save-Mechanismen
 
 ========================================
-🔮 Phase 3 (später): Nice-to-have Erweiterungen
+Phase 3 (später): Nice-to-have Erweiterungen
 ========================================
 
 | Idee                                     | Status | Kommentar                                    |
