@@ -41,7 +41,10 @@ Aufgaben:
 
 3. Neue GPT-Funktion get_judgment()
    - Systemprompt: Zynisch, wertend, ohne Rücksicht
+   - Soll entweder den verlauf des Chats oder Aussagen die im Chat gemacht worden sind "Judgen" 
    - Optionaler Target-User wird ins Prompt übernommen
+   - Vielleicht je nach Kontext Nickname änderung auf dem Server als "Punishment" (z.B FreakHuhn/Judged)
+
 
 ========================================
 Modularisierung & Wiederverwendbarkeit
