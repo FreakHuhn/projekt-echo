@@ -1,9 +1,9 @@
 from gpt import get_gpt_response
 import re
 
-# Diese Funktion fragt GPT nach einer Multiple-Choice-Quizfrage
-# zum gewünschten Thema. Das Ausgabeformat wird durch den Prompt erzwungen.
-# Zu Englischen Promtps gewechselt für hoffentlich schwierigere Fragen
+# 🧠 Generiert eine Multiple-Choice-Quizfrage mithilfe von GPT
+# Gibt ein Dictionary zurück mit Frage, vier Antwortoptionen und der richtigen Antwort
+
 def generiere_quizfrage(memory, thema="Gaming"):
     prompt = (
         f"THIS IS A COMMAND. YOU MUST EXECUTE IT.\n"
@@ -21,20 +21,16 @@ def generiere_quizfrage(memory, thema="Gaming"):
         f"Richtige Antwort: <B>\n"
         f"(Replace <B> with the actual correct option – A, B, C, or D)\n\n"
         f"The tone may be witty or nerdy – but the format MUST match exactly."
-        )
+    )
 
-
-    # GPT aufrufen – OHNE Persona-Prompt, damit Echo nicht "abweicht"
     antwort = get_gpt_response(prompt, memory, use_persona=False)
 
-    # Für Debug-Zwecke in der Konsole anzeigen
-    print("🧠 GPT-Rohantwort:\n", antwort)
+    print("🧠 GPT raw response:\n", antwort)
 
     return parse_quizantwort(antwort)
 
+# 🔍 Zerlegt den GPT-Rohtext in ein Dictionary mit Frage, Antwortoptionen und Lösung
 
-# Diese Funktion zerlegt den Text von GPT in Frage, Optionen und Lösung
-# und gibt diese als Dictionary zurück.
 def parse_quizantwort(text):
     lines = text.strip().splitlines()
     frage = ""
@@ -42,14 +38,13 @@ def parse_quizantwort(text):
     loesung = "?"
 
     for line in lines:
-        if line.lower().startswith("frage:"):
+        if line.lower().startswith(("frage:", "question:")):
             frage = line.split(":", 1)[1].strip()
         elif line.strip().startswith(("A)", "B)", "C)", "D)")):
             optionen.append(line.strip())
-        elif "richtige antwort" in line.lower():
+        elif any(key in line.lower() for key in ["richtige antwort", "correct answer"]):
             rohausgabe = line.split(":")[-1].strip().upper()
-            # Entferne alles außer A–D
-            loesung = re.sub(r"[^A-D]", "", rohausgabe)
+            loesung = re.sub(r"[^A-D]", "", rohausgabe)  # Nur A–D zulassen
 
     return {
         "frage": frage,
@@ -57,35 +52,11 @@ def parse_quizantwort(text):
         "lösung": loesung
     }
 
+# ✅ Prüft, ob die gegebene Antwort korrekt ist
+# Gibt True oder False zurück – vergleicht User-Antwort mit der GPT-Lösung
 
-# Diese Funktion prüft, ob die Eingabe des Spielers korrekt war.
-# Vergleicht mit der gespeicherten Lösung im Session-State.
-def prüfe_antwort(user_input, session):
+def pruefe_antwort(user_input, session):
     loesung = session.get("quiz", {}).get("lösung", "?")
     antwort = user_input.strip().upper()
+    print(f"📊 Antwortprüfung – Spieler: {antwort}, Lösung: {loesung}")
     return antwort == loesung
-
-
-"""
-QUIZ FAILS!!!!! schon ein bisschen lustig:
-🧠 GPT-Rohantwort:
- Frage: Welches Spiel wird oft als "The Legend of Zelda" bezeichnet?
-A) Super Mario Bros
-B) The Witcher 3
-C) World of Warcraft
-D) The Legend of Zelda
-Richtige Antwort: D
-
-Obviously.... Finde den Teil "wird oft" auch ganz schön weil ich es immer "The of Legend Zelda" nenne.
-
-
-🧠 GPT-Rohantwort:
- Frage: Welches dieser Formen in Tetris wird auch als "T-Stück" bezeichnet?
-A) Quadrat
-B) L-Stück
-C) Z-Stück
-D) T-Stück
-Richtige Antwort: D
-
-BRUH was das für ne frage... Gibt es überhaupt T-Stücke in Tetris?
-"""

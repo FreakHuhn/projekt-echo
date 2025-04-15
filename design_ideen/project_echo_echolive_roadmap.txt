@@ -1,0 +1,63 @@
+Project Echo – Feature-Roadmap: !echolive & !judge
+
+========================================
+Phase 1: Fundament – Channel-Kontext lesen und GPT füttern
+========================================
+
+Ziel:
+Implementiere !echolive, das GPT mit den letzten Channel-Nachrichten füttert und eine Antwort gibt, ohne memory.json zu benutzen.
+
+Aufgaben:
+1. Command hinzufügen in logic.py
+   - !echolive → Rückgabe: "__ECHOLIVE__<Text>"
+
+2. Sonderbehandlung in echo_bot.py
+   - Erkenne __ECHOLIVE__
+   - Baue Kontext aus channel.history(limit=10)
+   - GPT-Aufruf mit Nachrichtenverlauf + User-Eingabe
+
+3. Neue GPT-Funktion get_live_channel_response()
+   - Nutzt OpenAI API
+   - Reiner Kontext aus Channel → keine Persona
+   - Kein Schreibzugriff auf memory.json
+
+4. Optional: Debug-Logging in der Konsole
+   - Zeige an, wie viele Nachrichten verwendet wurden
+
+========================================
+Phase 2: Erweiterung – !judge als Kontext-Gimmick
+========================================
+
+Ziel:
+Echo „urteilt“ über den Chatverlauf oder eine Person, mit Channel-Kontext und sarkastischem Stil.
+
+Aufgaben:
+1. Neuer Command in logic.py
+   - !judge [@User] → "__JUDGE__<optional name>"
+
+2. Integration in echo_bot.py
+   - Analog zu !echolive
+   - Kontext wird gelesen, GPT mit speziellem Prompt gefüttert
+
+3. Neue GPT-Funktion get_judgment()
+   - Systemprompt: Zynisch, wertend, ohne Rücksicht
+   - Optionaler Target-User wird ins Prompt übernommen
+
+========================================
+Modularisierung & Wiederverwendbarkeit
+========================================
+
+- build_context_from_channel() → Zentrale Utility-Funktion
+- Kontext-Funktionen (get_live_channel_response, get_judgment) klar getrennt
+- Keine Abhängigkeit von memory.json → Kein Konflikt mit Save-Mechanismen
+
+========================================
+🔮 Phase 3 (später): Nice-to-have Erweiterungen
+========================================
+
+| Idee                                     | Status | Kommentar                                    |
+|------------------------------------------|--------|----------------------------------------------|
+| !echo durch !echolive ersetzen           | offen  | Entscheidung nach Testphase                  |
+| Logging von !echolive und !judge         | später | Debug- oder Statistikzwecke                  |
+| Bewertung einzelner User per Voting      | offen  | „Echo-Vote“ auf Basis der letzten X Nachrichten |
+| !profil für User-Statistiken             | offen  | Könnte z. B. judge_count, quiz_stats usw. anzeigen |
