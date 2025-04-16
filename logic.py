@@ -158,50 +158,90 @@ def handle_command(command, user_memory, username):
 
     # startet ein GPT-generiertes Quiz zum Thema mit optionalen Mitspielern(Multiplayer noch nicht ganz Funktionsfähig)
     elif command.startswith("!gamequiz"):
-        teile = command.split(" ", 1)
-        args = teile[1] if len(teile) > 1 else ""
         import re
-        thema_match = re.search(r'"([^\"]+)"', args)
-        mentions = re.findall(r'<@!?([0-9]+)>', args)
-        thema = thema_match.group(1) if thema_match else "Gaming"
+
+    # 🔍 1. Mentions (Discord-ID Format) und Thema (in Anführungszeichen) extrahieren
+        mention_ids = re.findall(r'<@!?(\d+)>', command)
+        thema_match = re.search(r'"([^"]+)"', command)
+        thema = thema_match.group(1) if thema_match else "Allgemein"
+
+    # 👥 2. Spieler setzen (du selbst + alle gültigen Mentions)
+        quiz_players = list(set([username] + mention_ids))
+
+    # 🧠 3. Quizfrage generieren mit GPT (bestehende Funktion)
         frage_daten = generiere_quizfrage(user_memory, thema)
+
+    # 💾 4. Session-Setup
         session["quiz"] = frage_daten
         session["quiz_aktiv"] = True
         session["modus"] = "quiz"
-        session["quiz_players"] = [username] + mentions
+        session["quiz_players"] = quiz_players
         session["quiz_antworten"] = {}
-        print(f"🎮 Quiz gestartet für Thema: {thema} – Spieler: {session['quiz_players']}")
-        return (
-            f"🎮 Gamequiz gestartet zum Thema: {thema}\n\n"
-            f"{frage_daten['frage']}\n" +
-            "\n".join(frage_daten["optionen"]) +
-            "\n\nAntworte mit `!antwort A/B/C/D`"
+
+    # 📝 5. Formatierte Rückgabe (Solo vs Multiplayer)
+        frage_text = frage_daten["frage"]
+        optionen_text = "\n".join(frage_daten["optionen"])
+
+        if len(quiz_players) == 1:
+            return (
+                f"🧠 Solo-Quiz zum Thema: *{thema}* wurde gestartet!\n\n"
+                f"{frage_text}\n{optionen_text}\n\n"
+                f"Antwort mit `!antwort A/B/C/D` – sofortige Auswertung nach deiner Eingabe."
         )
+        else:
+            mentions_text = ", ".join([f"<@{uid}>" for uid in quiz_players])
+            return (
+                f"🎮 Multiplayer-Quiz zum Thema: *{thema}* wurde gestartet!\n"
+                f"Eingeladene Spieler: {mentions_text}\n\n"
+                f"{frage_text}\n{optionen_text}\n\n"
+                f"Antwortet mit `!antwort A/B/C/D` – das Ergebnis kommt, sobald alle geantwortet haben."
+            )
+
     
-    # verarbeitet Quizantwort, prüft Korrektheit und beendet das Quiz bei Vollständigkeit
     elif command.startswith("!antwort"):
         antwort = command.split(" ", 1)[1].strip().upper() if " " in command else ""
 
         if not session.get("quiz_aktiv"):
             return "⚠️ Kein aktives Quiz! Starte eins mit `!gamequiz`."
 
-        if username in session.get("quiz_antworten", {}):
-            return "⏳ Du hast schon geantwortet. Warte auf die anderen."
-
-        session.setdefault("quiz_antworten", {})[username] = antwort
-        korrekt = pruefe_antwort(antwort, session)
-        name = user_memory.get("name", username)
-        feedback = f"{'✅ Richtig' if korrekt else '❌ Leider falsch'}, {name}."
-
-        antworten = session.get("quiz_antworten", {})
+        antworten = session.setdefault("quiz_antworten", {})
         spieler = session.get("quiz_players", [])
 
-        if spieler and all(uid in antworten for uid in spieler):
-            session["quiz_aktiv"] = False
-            session["modus"] = "neutral"
-            feedback += "\nAlle haben geantwortet – das Quiz ist beendet."
+        if username in antworten:
+            return "⏳ Du hast schon geantwortet. Warte auf die anderen."
 
-        return feedback
+    # 📝 Antwort speichern, aber noch NICHT bewerten
+        antworten[username] = antwort
+
+        verbleibend = [uid for uid in spieler if uid not in antworten]
+
+    # 👥 Wenn noch Spieler fehlen → warten
+        if verbleibend:
+            return (
+                f"✅ Antwort gespeichert für <@{username}>.\n"
+                f"⏳ Noch ausstehend: {', '.join([f'<@{uid}>' for uid in verbleibend])}"
+            )
+
+    # ✅ Alle haben geantwortet → auswerten!
+        frage_info = session.get("quiz", {})
+        loesung = frage_info.get("lösung", "?")
+
+        auswertung = []
+        for uid in spieler:
+            gegeben = antworten.get(uid, "—")
+            korrekt = "✅" if gegeben == loesung else "❌"
+            auswertung.append(f"<@{uid}>: {gegeben} {korrekt}")
+
+    # 🔒 Quiz abschließen
+        session["quiz_aktiv"] = False
+        session["modus"] = "neutral"
+
+        return (
+            f"📊 Alle Antworten sind eingegangen! Die richtige Lösung war: **{loesung}**\n\n"
+            + "\n".join(auswertung)
+        )
+
+
 
     elif command.startswith("!invite") or command.startswith("!silentinvite"):
         usernames, nachricht = parse_invite_command(command, sender_name=user_memory.get("name", username))
