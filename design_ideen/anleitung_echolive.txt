@@ -1,0 +1,116 @@
+
+## Schritt-für-Schritt Anleitung zur Umsetzung von `!echolive` in Project Echo
+
+### Ziel:
+Ein neuer Befehl `!echolive`, der den aktuellen Chatverlauf (letzte X Nachrichten) eines Discord-Channels an GPT sendet, um darauf inhaltlich zu reagieren. Dabei wird **kein Memory-Zugriff** verwendet.
+
+---
+
+### 🔧 1. `logic.py` anpassen – Command-Flag setzen
+
+Füge in `handle_command` in `logic.py` folgenden Block ein:
+
+```python
+elif command == "!echolive":
+    return "__ECHOLIVE__"
+```
+
+➡️ Das ist ein internes Flag, das `echo_bot.py` erkennen kann, um Speziallogik auszulösen.
+
+---
+
+### 🧠 2. `echo_bot.py` erweitern – Spezialbehandlung
+
+Direkt nach `response = process_input(...)` einfügen:
+
+```python
+if response.startswith("__ECHOLIVE__"):
+    context = await build_context_from_channel(message.channel)
+    gpt_response = await get_live_channel_response(context)
+    await message.channel.send(gpt_response)
+    return
+```
+
+---
+
+### 🧩 3. Neue Hilfsfunktion: `build_context_from_channel()`
+
+Diese Funktion holt die letzten X Nachrichten aus dem Channel.
+Am besten unterhalb der bestehenden Event-Handler in `echo_bot.py` anlegen:
+
+```python
+async def build_context_from_channel(channel, limit=10):
+    messages = await channel.history(limit=limit).flatten()
+    messages.reverse()  # chronologische Reihenfolge
+
+    context = []
+    for msg in messages:
+        name = msg.author.display_name
+        content = msg.content
+        context.append(f"{name}: {content}")
+
+    return "\n".join(context)
+```
+
+📌 Hinweis: `.flatten()` ist in manchen neueren Discord-Versionen veraltet – ggf. `async for` nutzen!
+
+---
+
+### 🧠 4. Neue GPT-Funktion `get_live_channel_response()`
+
+Diese Funktion erzeugt die Antwort basierend auf Kontext, **ohne Persona oder Memory**.
+In `gpt.py` hinzufügen:
+
+```python
+def get_live_channel_response(context):
+    try:
+        messages = [
+            {"role": "system", "content": "Du bist Echo. Antworte in fließendem Deutsch, stilistisch sarkastisch und trocken."},
+            {"role": "user", "content": f"Dies ist der aktuelle Discord-Chat:\n{context}\n\nWas willst du sagen?"}
+        ]
+
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=messages,
+            temperature=1.1,
+            max_tokens=1024
+        )
+
+        return response.choices[0].message.content.strip()
+
+    except Exception as e:
+        return f"❌ Fehler beim Generieren der Live-Antwort: {e}"
+```
+
+---
+
+### ✅ 5. Test & Debug
+
+- Rufe `!echolive` im Discord auf
+- Beobachte, ob Echo auf den aktuellen Channel-Inhalt reagiert
+- Nutze ggf. Debug-Ausgabe wie `print(context)`
+
+Optional: `limit` erhöhen oder Logging ergänzen
+
+---
+
+### 🧱 Bonus-Idee: Modularisierung vorbereiten
+
+Später auslagern in ein Modul `features/echolive.py` mit:
+- `build_context_from_channel()`
+- `get_live_channel_response()`
+- ggf. Kontext-Caching / anonymisierung
+
+---
+
+### Zusammenfassung der beteiligten Dateien
+
+| Datei        | Änderung                             |
+|--------------|---------------------------------------|
+| `logic.py`   | `!echolive` → Rückgabe: `__ECHOLIVE__`|
+| `echo_bot.py`| Reaktion auf Flag + Context-Logik     |
+| `gpt.py`     | neue Funktion `get_live_channel_response()` |
+
+---
+
+> Danach kann `!judge` als Schwesterfunktion sehr leicht implementiert werden – mit gleichem Aufbau, anderem Prompt.
