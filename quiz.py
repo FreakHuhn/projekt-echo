@@ -1,6 +1,7 @@
 from gpt import get_gpt_response
 import re
 
+
 # 🧠 Generiert eine Multiple-Choice-Quizfrage mithilfe von GPT
 # Gibt ein Dictionary zurück mit Frage, vier Antwortoptionen und der richtigen Antwort
 
@@ -52,11 +53,77 @@ def parse_quizantwort(text):
         "lösung": loesung
     }
 
+
+import random
+from datetime import datetime
+
+# 💀 Warhammer Easter Egg – Spezialmodus bei Thema "Warhammer"
+# 10% Chance, dass eine spezielle Frage mit Antwortfenster erscheint
+def versuche_warhammer_easteregg(thema):
+    if thema.lower() != "warhammer":
+        return None  # Nur für Warhammer-Themen
+
+    if random.random() <= 0.1:
+        print("💀 Warhammer Easter Egg aktiviert.")  # Optionales Debug
+
+        frage = "For the ...?"
+        optionen = [
+            "A) Emperor!",
+            "B) Emperor!",
+            "C) Emperor!",
+            "D) Emperor!"
+        ]
+        return {
+            "frage": frage,
+            "optionen": optionen,
+            "lösung": "ALLE",  # Spezialfall, bei dem alles zählt – aber mit Timeout
+            "startzeit": datetime.now().isoformat()
+        }
+
+    return None  # Kein Trigger
+
 # ✅ Prüft, ob die gegebene Antwort korrekt ist
 # Gibt True oder False zurück – vergleicht User-Antwort mit der GPT-Lösung
+# Wird durch bewerte_antwort ersetzt, behalten wir aber erstmal. Wer weiß ob wir es noch brauchen.
+#def pruefe_antwort(user_input, session):
+    #loesung = session.get("quiz", {}).get("lösung", "?")
+    #antwort = user_input.strip().upper()
+    #print(f"📊 Antwortprüfung – Spieler: {antwort}, Lösung: {loesung}")
+    #return antwort == loesung
 
-def pruefe_antwort(user_input, session):
-    loesung = session.get("quiz", {}).get("lösung", "?")
-    antwort = user_input.strip().upper()
-    print(f"📊 Antwortprüfung – Spieler: {antwort}, Lösung: {loesung}")
-    return antwort == loesung
+from datetime import datetime
+
+# 🧠 Bewertet eine Quiz-Antwort inkl. Spezialfälle (ALLE, Timeout etc.)
+def bewerte_antwort(antwort, session, user_id):
+    frage = session.get("quiz", {})
+    loesung = frage.get("lösung", "?")
+    startzeit = frage.get("startzeit") or session.get("quiz_startzeit")
+    antwort = antwort.strip().upper()
+
+    # ⏳ Warhammer-Modus: ALLE Antworten korrekt, aber nur für 10 Sekunden
+    if loesung == "ALLE":
+        if startzeit:
+            start_dt = datetime.fromisoformat(startzeit)
+            zeit_differenz = (datetime.now() - start_dt).total_seconds()
+            if zeit_differenz > 10:
+                return {
+                    "korrekt": False,
+                    "grund": "timeout",
+                    "antwort": antwort,
+                    "richtig": "ALLE"
+                }
+        return {
+            "korrekt": True,
+            "grund": "richtig",
+            "antwort": antwort,
+            "richtig": "ALLE"
+        }
+
+    # ✅ Normale Prüfung
+    korrekt = antwort == loesung
+    return {
+        "korrekt": korrekt,
+        "grund": "richtig" if korrekt else "falsch",
+        "antwort": antwort,
+        "richtig": loesung
+    }
