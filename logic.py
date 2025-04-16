@@ -156,7 +156,7 @@ def handle_command(command, user_memory, username):
         session["modus"] = "gpt"
         return response
 
-    # startet ein GPT-generiertes Quiz zum Thema mit optionalen Mitspielern(Multiplayer noch nicht ganz Funktionsfähig)
+    # startet ein GPT-generiertes Quiz zum Thema mit optionalen Mitspielern(Multiplayer funktion in Arbeit)
     elif command.startswith("!gamequiz"):
         import re
 
