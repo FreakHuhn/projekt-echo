@@ -1,0 +1,77 @@
+
+## Nächste Schritte und Ideen für Project Echo (nach !echolive)
+
+---
+
+### ✅ Status Quo
+
+- `!echolive` erfolgreich implementiert
+- Echo analysiert den Channel-Kontext (letzte Nachrichten)
+- GPT antwortet kontextbezogen, aber ohne memory.json
+- Debug-Ausgaben zeigen Klartext → volle Kontrolle
+
+---
+
+## 🔜 Nächste mögliche Schritte
+
+### 1. !judge – Zynischer Kontext-Richter
+- Echo bewertet den Chatverlauf oder einen bestimmten Nutzer
+- Antwortstil: zynisch, wertend, respektlos (aber stilvoll)
+- Umsetzung wie !echolive:
+  - `handle_command()` → "__JUDGE__"
+  - GPT-Funktion: `get_judgment(context, target_user)`
+  - Prompt: „Beurteile diesen Verlauf mit maximaler Verachtung...“
+
+---
+
+### 2. Kontextlänge erhöhen (build_context_from_channel)
+- Aktuell `limit=10`
+- Optional auf 15–20 setzen
+- Alternative: Nachrichten von bestimmten Usern priorisieren
+
+---
+
+### 3. GPT-Antworten mit mehr Kontrolle
+- Parameter tweaken: `temperature`, `max_tokens`, `top_p`
+- Prompt-Varianten für mehr Stil oder Fokus:
+  - neutral
+  - roleplay
+  - philosophisch
+
+---
+
+### 4. Logging strukturieren (statt print)
+- `logging.debug(...)` statt `print(...)`
+- Konfigurierbare Log-Level: DEBUG / INFO / ERROR
+- Separate Datei für EchoLogs?
+
+---
+
+### 5. Feature-Modularisierung
+- Auslagern in `features/echolive.py`, `features/judge.py`
+- Einbau einer `feature_registry` (Mapping: command → handler)
+
+---
+
+### 6. Visuelle Ausgabe vorbereiten (für spätere GUI)
+- Aktuelles `mood`, `modus`, letzter Befehl → exportierbar machen
+- JSON-Export oder WebSocket-Schnittstelle
+
+---
+
+### 7. Sprachsteuerung vorbereiten
+- STT: Whisper / Google STT
+- TTS: ElevenLabs / Coqui / Azure
+- Discord-Voice-Integration oder lokale Demo?
+
+---
+
+## 🌱 Ideen für kleine Erweiterungen
+
+- !profil → Statistik über User (Quiz, Votes, Einladungen)
+- !moodcheck → Echo rät deinen Gemütszustand
+- !trend → Echo sagt, worüber am meisten geredet wurde
+- !quote → Echo droppt einen random Zitat aus Chatverlauf
+
+---
+

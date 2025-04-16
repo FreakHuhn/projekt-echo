@@ -150,7 +150,7 @@ def handle_command(command, user_memory, username):
         return "🚫 Das aktuelle Quiz wurde abgebrochen."
 
     # leitet User-Eingabe an GPT weiter (mit Persona), wenn !echo verwendet wird
-    elif command.startswith("!echo"):
+    elif command.strip() == "!echo" or command.startswith("!echo "):
         user_input = command[len("!echo"):].strip()
         if not user_input:
             return "Was soll ich denn wiederholen, hm?"
@@ -285,5 +285,9 @@ def handle_command(command, user_memory, username):
         sichtbarkeit = "stille" if session["last_skill"]["mode"] == "silent" else "öffentliche"
         zeile_pro_user = "\n".join([f"📨 Einladung an {name} erkannt (noch nicht verschickt)." for name in usernames])
         return f"{zeile_pro_user}\n({sichtbarkeit.capitalize()} Einladung wird vorbereitet)"
-    
+
+    elif command == "!echolive":
+        return "__ECHOLIVE__"
+
+
     return "Unbekannter Befehl. Gib `!help` ein für alle Befehle."

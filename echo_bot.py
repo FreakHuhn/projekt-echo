@@ -39,6 +39,19 @@ async def on_message(message):
         memory["users"][user_id]["name"] = display_name
 
     response = process_input(user_input, username=user_id, display_name=display_name)
+    print("🧪 Ergebnis von process_input():", response)
+
+    if response and response.startswith("__ECHOLIVE__"):
+        context = await build_context_from_channel(message.channel)
+        print("📋 Kontext an GPT:\n", context)
+
+        from gpt import get_live_channel_response
+        gpt_response = get_live_channel_response(context)
+
+        print("📥 GPT hat geantwortet:\n", gpt_response)
+        await message.channel.send(gpt_response)
+        return
+
 
     if response:
         await message.channel.send(response)
@@ -103,6 +116,26 @@ async def on_message(message):
 
     finally:
         session.pop("last_skill", None)
+
+async def build_context_from_channel(channel, limit=10):
+    # Holt die letzten X Nachrichten
+    try:
+        messages = await channel.history(limit=limit).flatten()
+    except AttributeError:
+        # fallback, falls flatten() deprecated ist (neue discord.py-Version)
+        messages = []
+        async for msg in channel.history(limit=limit):
+            messages.append(msg)
+
+    messages.reverse()  # älteste zuerst
+
+    context = []
+    for msg in messages:
+        name = msg.author.display_name
+        content = msg.content
+        context.append(f"{name}: {content}")
+
+    return "\n".join(context)
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 client.run(TOKEN)

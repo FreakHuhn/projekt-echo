@@ -79,3 +79,35 @@ def get_gpt_response(prompt, memory, use_persona=True):
 
     except Exception as e:
         return f"Fehler bei der GPT-Anfrage: {e}"
+
+def get_live_channel_response(context):
+    try:
+        messages = [
+            {
+                "role": "system",
+                "content": (
+                    "Du bist Echo. Antworte in fließendem Deutsch. "
+                    "Dein Stil ist trocken, sarkastisch, aber schlagfertig. "
+                    "Du reagierst auf das, was gerade im Discord-Channel passiert ist."
+                )
+            },
+            {
+                "role": "user",
+                "content": (
+                    f"Dies ist der aktuelle Discord-Chat:\n{context}\n\n"
+                    f"Was willst du sagen?"
+                )
+            }
+        ]
+
+        response = client.chat.completions.create(        
+            model="gpt-3.5-turbo",
+            messages=messages,
+            temperature=1.1,
+            max_tokens=1024
+        )
+        print("📋 Kontext an GPT:\n", context)
+        return response.choices[0].message.content.strip()
+
+    except Exception as e:
+        return f"❌ Fehler beim Generieren der Live-Antwort: {e}"
