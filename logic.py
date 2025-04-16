@@ -65,15 +65,19 @@ def process_input(user_input, username="default", display_name=None):
 def handle_command(command, user_memory, username):
     session = user_memory.setdefault("session_state", {})
 
+    # passive Befehle werden nicht als letzter Befehl gespeichert
     passive_commands = ["!help", "!status", "!history"]
+    # last_skill wird nur gelöscht, wenn kein Invite-Befehl vorliegt
     if command.split()[0] not in ["!invite", "!silentinvite"]:
         session.pop("last_skill", None)
+    # nur aktive Befehle setzen letzten Befehl und Modus
     if command not in passive_commands:
         session["letzter_befehl"] = command
         session["modus"] = "befehl"
 
     print(f"🔧 handle_command: {command} von {username}")
 
+    # listet alle verfügbaren Befehle mit kurzer Beschreibung
     if command == "!help":
         return (
             "📖 Verfügbare Befehle:\n"
@@ -88,7 +92,8 @@ def handle_command(command, user_memory, username):
             "- !invite \"Benutzer1\" \"Benutzer2\" : Nachricht → Öffentliche Einladung per DM\n"
             "- !silentinvite \"Benutzer1\" ... : Nachricht → Stille Einladung ohne Channel-Output"
         )
-    
+   
+    # zeigt aktuellen Zustand des Users: Name, Stimmung, Modus, letzter Befehl
     elif command == "!status":
         name = user_memory.get("name", username)
         mood = user_memory.get("mood", "neutral")
@@ -102,6 +107,15 @@ def handle_command(command, user_memory, username):
             f"- Letzter Befehl: {letzter}"
             )
     
+    # setzt Stimmung, Verlauf und Session-State des Nutzers zurück
+    elif command == "!reset":
+        name = user_memory.get("name", username)
+        user_memory["mood"] = "neutral"
+        user_memory["session_state"] = {}
+        user_memory["history"] = []
+        return f"🔄 Alles zurückgesetzt für {name}. Frischer Start – los geht's!"
+
+    # generiert kurzen Tipp zum angegebenen Thema (noch ohne Persona-Stil)
     elif command.startswith("!tip"):
         teile = command.split(" ", 1)
         thema = teile[1] if len(teile) > 1 else "unbestimmt"
@@ -112,6 +126,7 @@ def handle_command(command, user_memory, username):
         response = get_gpt_response(prompt, user_memory, use_persona=False)
         return f"💡 Tipp zum Thema *{thema}*:\n{response}"
 
+    # zeigt die letzten fünf Nachrichten (User + Echo) mit Zeitstempel
     elif command == "!history":
         history = user_memory.get("history", [])
         last_entries = history[-5:]
@@ -123,6 +138,7 @@ def handle_command(command, user_memory, username):
             lines.append(f"{wer} [{zeit}]: {text}")
         return "\n".join(lines)
 
+    # bricht ein aktives Quiz ab und leert zugehörige Session-Einträge
     elif command == "!gamequiz cancel":
         session["quiz_aktiv"] = False
         session["quiz"] = {}
@@ -131,6 +147,7 @@ def handle_command(command, user_memory, username):
         print(f"🚫 Quizabbruch erkannt von {username}")
         return "🚫 Das aktuelle Quiz wurde abgebrochen."
 
+    # leitet User-Eingabe an GPT weiter (mit Persona), wenn !echo verwendet wird
     elif command.startswith("!echo"):
         user_input = command[len("!echo"):].strip()
         if not user_input:
@@ -139,6 +156,7 @@ def handle_command(command, user_memory, username):
         session["modus"] = "gpt"
         return response
 
+    # startet ein GPT-generiertes Quiz zum Thema mit optionalen Mitspielern(Multiplayer noch nicht ganz Funktionsfähig)
     elif command.startswith("!gamequiz"):
         teile = command.split(" ", 1)
         args = teile[1] if len(teile) > 1 else ""
@@ -159,7 +177,8 @@ def handle_command(command, user_memory, username):
             "\n".join(frage_daten["optionen"]) +
             "\n\nAntworte mit `!antwort A/B/C/D`"
         )
-
+    
+    # verarbeitet Quizantwort, prüft Korrektheit und beendet das Quiz bei Vollständigkeit
     elif command.startswith("!antwort"):
         antwort = command.split(" ", 1)[1].strip().upper() if " " in command else ""
 
