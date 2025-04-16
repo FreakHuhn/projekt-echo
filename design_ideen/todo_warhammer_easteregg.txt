@@ -1,0 +1,46 @@
+🛠️ Project Echo – Warhammer Easter Egg ("For the Emperor") Integration
+
+## 🎯 Ziel
+Spezialfall für `!gamequiz "Warhammer"` mit 10% Triggerchance:
+- Frage: "For the Emperor?"
+- Optionen: A–D = "Emperor"
+- Alle Antworten sind korrekt – aber nur innerhalb von 10 Sekunden.
+- Danach: "⛔️ Too late, Heretic."
+
+---
+
+## 📝 Schritte zur Umsetzung
+
+### 1. `!gamequiz`-Erweiterung in logic.py
+- Thema `warhammer` unabhängig von Groß-/Kleinschreibung prüfen.
+- Mit `random.random()` eine 10%-Chance auslösen.
+- Wenn aktiv:
+  - `session["quiz"] = {"frage": ..., "optionen": ..., "lösung": "ALLE"}`
+  - `session["quiz_startzeit"] = datetime.now().isoformat()`
+
+### 2. `!antwort`-Anpassung in logic.py
+- Bei `"lösung": "ALLE"` sollen **alle Antworten (A–D)** korrekt sein.
+- Wenn mehr als 10 Sekunden seit `quiz_startzeit` vergangen sind:
+  - Antwort automatisch **falsch**
+  - Rückmeldung: `⛔️ Too late, Heretic.`
+
+### 3. Timeout-Logik implementieren
+- `datetime.fromisoformat(...)` nutzen für Startzeit.
+- Zeitdifferenz prüfen mit `total_seconds()`.
+
+### 4. Rückmeldungen anpassen
+- Richtig: `✅ Richtig, Name.`
+- Falsch (Timeout): `⛔️ Too late, Heretic.`
+- Falsch (normal): `❌ Leider falsch, Name.`
+
+### 5. Debug-Logging (optional)
+- In Konsole: `print("💀 Warhammer Easter Egg aktiviert.")`
+- Zeitstempel & Entscheidungspfad loggen.
+
+---
+
+## 🧪 Testfälle
+- Eingabe: `!gamequiz "Warhammer"` → 10%: Spezialfrage
+- Eingabe: `!antwort D` innerhalb 10 Sekunden → ✅
+- Eingabe: `!antwort A` nach 12 Sekunden → ⛔️ Heretic
+
