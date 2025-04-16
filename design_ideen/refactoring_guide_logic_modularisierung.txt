@@ -1,0 +1,121 @@
+# 🧠 Refactoring-Guide für logic.py: Modularisierung & Mini-Router
+
+## 🎯 Ziel
+Die Datei `logic.py` ist zu groß und übernimmt zu viele Verantwortlichkeiten. Ziel dieses Refactorings ist es, die Datei in modulare Einzelteile zu zerlegen und eine zentrale Routing-Stelle (`handle_command`) einzuführen.
+
+---
+
+## 🧩 Modulstruktur
+
+Wir schlagen folgende Struktur unter `/features/` vor:
+
+```
+features/
+│
+├── quiz.py           # Alle Quiz-bezogenen Funktionen (!gamequiz, !antwort, Bewertung, Eastereggs)
+├── invite.py         # Parsing und Verarbeitung von !invite und !silentinvite
+├── echolive.py       # Kontextbezogene GPT-Kommandos wie !echolive
+├── judge.py          # Kontextanalyse mit Tonalität („Zynischer Richter“)
+```
+
+---
+
+## 🔁 Mini-Router Konzept
+
+### Datei: logic.py
+
+Zentrale `handle_command()`-Funktion leitet eingehende Befehle weiter – an die jeweils zuständigen Feature-Handler.
+
+**Beispiel:**
+
+```python
+from features.quiz import handle_quiz_command
+from features.invite import handle_invite_command
+from features.echolive import handle_echolive_command
+
+def handle_command(command, user_memory, username):
+    if command.startswith("!gamequiz") or command.startswith("!antwort"):
+        return handle_quiz_command(command, user_memory, username)
+
+    elif command.startswith("!invite") or command.startswith("!silentinvite"):
+        return handle_invite_command(command, user_memory, username)
+
+    elif command.startswith("!echolive"):
+        return handle_echolive_command(command, user_memory, username)
+
+    # Standard-Commands (bleiben erstmal hier)
+    elif command == "!help":
+        return "📖 Hilfe..."
+    
+    elif command == "!status":
+        # evtl. später in features/status.py
+        ...
+
+    return "Unbekannter Befehl. Gib `!help` ein für alle Befehle."
+```
+
+---
+
+## 📦 Feature-Dateien
+
+### features/quiz.py
+
+```python
+def handle_quiz_command(command, user_memory, username):
+    if command.startswith("!gamequiz"):
+        # bestehende gamequiz-Logik hierher verschieben
+        ...
+    elif command.startswith("!antwort"):
+        # bestehende Antwort-Logik hierher verschieben
+        ...
+    return "Unbekannter Quiz-Befehl"
+```
+
+---
+
+### features/invite.py
+
+```python
+def handle_invite_command(command, user_memory, username):
+    # parse_invite_command() aufrufen
+    # session["last_skill"] setzen
+    ...
+    return "Einladungs-Logik läuft"
+```
+
+---
+
+### features/echolive.py
+
+```python
+def handle_echolive_command(command, user_memory, username):
+    return "__ECHOLIVE__"
+```
+
+Diese Flag-Rückgabe wird in `echo_bot.py` abgefangen.
+
+---
+
+## 🔧 Weitere Änderungen
+
+### 1. `process_input()` bleibt in logic.py
+- Lädt Speicher
+- Loggt Nachricht
+- Ruft `handle_command()` auf
+- Speichert Ergebnis
+
+### 2. Importpfade anpassen
+- `from features.quiz import handle_quiz_command` usw.
+
+### 3. Feature-Files: mit Kommentaren strukturieren
+- Jede Funktion sauber kommentieren
+- Testbare Einzelfunktionen ermöglichen
+
+---
+
+## ✅ Vorteile
+
+- Saubere Trennung der Verantwortlichkeiten
+- Leicht testbar
+- Leicht erweiterbar (!judge, !profil, !moodcheck, ...)
+- Einstiegshürde für neue Entwickler oder Helfer niedriger
