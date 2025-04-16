@@ -88,7 +88,20 @@ def handle_command(command, user_memory, username):
             "- !invite \"Benutzer1\" \"Benutzer2\" : Nachricht → Öffentliche Einladung per DM\n"
             "- !silentinvite \"Benutzer1\" ... : Nachricht → Stille Einladung ohne Channel-Output"
         )
-
+    
+    elif command == "!status":
+        name = user_memory.get("name", username)
+        mood = user_memory.get("mood", "neutral")
+        modus = session.get("modus", "unbekannt")
+        letzter = session.get("letzter_befehl", "unbekannt")
+        return (
+            f"🧠 Aktueller Status:\n"
+            f"- Benutzer: {name}\n"
+            f"- Stimmung: {mood}\n"
+            f"- Modus: {modus}\n"
+            f"- Letzter Befehl: {letzter}"
+            )
+    
     elif command.startswith("!tip"):
         teile = command.split(" ", 1)
         thema = teile[1] if len(teile) > 1 else "unbestimmt"
