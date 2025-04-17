@@ -88,18 +88,22 @@ def handle_command(command, user_memory, username):
     # listet alle verfügbaren Befehle mit kurzer Beschreibung
     if command == "!help":
         return (
-            "📖 Verfügbare Befehle:\n"
-            "- !help: Zeigt diese Übersicht\n"
-            "- !history: Zeigt die letzten 5 Einträge\n"
-            "- !status: Zeigt den aktuellen Systemzustand\n"
-            "- !tip \"Thema\": Gibt einen kurzen Hinweis\n"
-            "- !echo <Text>: Fragt Echo direkt (GPT)\n"
-            "- !gamequiz \"Thema\" @User1 @User2 ...: Startet ein Quiz (optional Multiplayer)\n"
-            "- !gamequiz cancel: Bricht ein aktives Quiz ab\n"
-            "- !antwort A/B/C/D: Antwortet auf aktive Quizfrage\n"
-            "- !invite \"Benutzer1\" \"Benutzer2\" : Nachricht → Öffentliche Einladung per DM\n"
-            "- !silentinvite \"Benutzer1\" ... : Nachricht → Stille Einladung ohne Channel-Output"
-        )
+            "📖 **Verfügbare Befehle:**\n"
+            "- `!antwort A/B/C/D` – Antwort auf aktive Quizfrage\n"
+            "- `!echo <Text>` – Fragt Echo direkt (GPT mit Persönlichkeit)\n"
+            "- `!echolive` – Echo kommentiert den aktuellen Chatverlauf\n"
+            "- `!gamequiz \"Thema\" [@User1 @User2]` – Startet ein Nerd-Quiz\n"
+            "- `!gamequiz cancel` – Bricht ein aktives Quiz ab\n"
+            "- `!help` – Zeigt diese Übersicht\n"
+            "- `!history` – Zeigt die letzten 5 Nachrichten\n"
+            "- `!invite \"Name1\" \"Name2\" : Text` – Öffentliche Einladungen per DM\n"
+            "- `!judge [@User]` – Echo urteilt gnadenlos über den Channel (oder eine Person)\n"
+            "- `!reset` – Setzt deinen Session-Zustand und Verlauf zurück\n"
+            "- `!silentinvite \"Name1\" ... : Text` – Stille Einladungen (nur per DM)\n"
+            "- `!status` – Zeigt deinen aktuellen Zustand\n"
+            "- `!tip <Thema>` – Kurzer Tipp von Echo"
+            )
+
    
     # zeigt aktuellen Zustand des Users: Name, Stimmung, Modus, letzter Befehl
     elif command == "!status":
