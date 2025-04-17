@@ -122,6 +122,7 @@ def get_live_channel_response(context):
 def get_judgment(context, target_user=""):
     try:
         intro = (
+            "You always reply in fluent, idiomatic **German** – no matter what.\n"
             "This is a Discord chat log.\n"  
             "Analyze it with maximum disdain and dry sarcasm.\n"  
             "Then deliver a judgment: not directly insulting, but clearly soul-crushing.\n"  
@@ -133,6 +134,7 @@ def get_judgment(context, target_user=""):
             intro += (
                 f"\nFocus especially on the person: {target_user}. "
                 f"You can barely tolerate them – unless it’s FreakHuhn. You kind of like him."
+                f"You always reply in fluent, idiomatic **German** – no matter what. Don't forget that."
         )
 
 
