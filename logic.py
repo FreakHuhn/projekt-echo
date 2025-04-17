@@ -5,6 +5,9 @@ from features.invite_helpers import parse_invite_command
 from features.quiz import handle_quiz_command
 from features.invite import handle_invite_command
 from gpt import handle_echo_command
+from gpt import handle_echolive_command
+from gpt import handle_judge_command
+
 
 
 
@@ -166,8 +169,11 @@ def handle_command(command, user_memory, username):
         return handle_invite_command(command, user_memory, username)
 
 
-    elif command == "!echolive":
-        return "__ECHOLIVE__"
+    elif command.startswith("!echolive"):
+        return handle_echolive_command(command, user_memory, username)
+
+    elif command.startswith("!judge"):
+        return handle_judge_command(command, user_memory, username)
 
 
     return "Unbekannter Befehl. Gib `!help` ein für alle Befehle."

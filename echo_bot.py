@@ -37,6 +37,7 @@ async def on_message(message):
             "session_state": {},
             "history": []
         }
+    
     elif "name" not in memory["users"][user_id] or memory["users"][user_id]["name"] != display_name:
         memory["users"][user_id]["name"] = display_name
 
@@ -52,6 +53,15 @@ async def on_message(message):
 
         print("📥 GPT hat geantwortet:\n", gpt_response)
         await message.channel.send(gpt_response)
+        return
+
+    if response and response.startswith("__JUDGE__"):
+        target_user = response[len("__JUDGE__"):].strip()
+        context = await build_context_from_channel(message.channel)
+
+        from gpt import get_judgment
+        judgment = get_judgment(context, target_user)
+        await message.channel.send(judgment)
         return
 
 

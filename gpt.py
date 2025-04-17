@@ -119,6 +119,35 @@ def get_live_channel_response(context):
     except Exception as e:
         return f"❌ Fehler beim Generieren der Live-Antwort: {e}"
 
+def get_judgment(context, target_user=""):
+    try:
+        intro = (
+            f"Dies ist ein Discord-Chatverlauf. "
+            f"Analysiere ihn mit maximaler Verachtung und trockenem Sarkasmus. "
+            f"Danach fällst du eine Beurteilung, nicht beleidigend aber niederschmetternd."
+            f"Verhänge außerdem eine Strafe. Sie sollte zum Chatverlauf passen."
+        )
+
+        if target_user:
+            intro += f"\nFokussiere dich besonders auf die Person: {target_user}"
+
+        messages = [
+            {"role": "system", "content": intro},
+            {"role": "user", "content": context}
+        ]
+
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=messages,
+            temperature=1.3,
+            max_tokens=1024
+        )
+
+        return response.choices[0].message.content.strip()
+
+    except Exception as e:
+        return f"❌ Fehler beim Urteil: {e}"
+
 
 #-----------------------[Command Handler]---------------------------------------------------------------------------------------------------------------------------
 # 🧠 Verarbeitet den !echo-Befehl
@@ -139,3 +168,27 @@ def handle_echo_command(command, user_memory, username):
     session["modus"] = "gpt"
 
     return response
+
+# 🧠 Verarbeitet den !echolive-Befehl
+# Gibt nur ein Flag zurück – echo_bot.py übernimmt den Kontext und die GPT-Verarbeitung
+
+def handle_echolive_command(command, user_memory, username):
+    # Optional: Modus setzen für spätere Logging-/Analysezwecke
+    session = user_memory.setdefault("session_state", {})
+    session["modus"] = "live"
+
+    return "__ECHOLIVE__"
+
+
+# 🧠 Verarbeitet den !judge-Befehl
+# Gibt Flag zurück für echo_bot – optional mit Zielperson
+
+def handle_judge_command(command, user_memory, username):
+    teile = command.strip().split(" ", 1)
+    ziel = teile[1] if len(teile) > 1 else ""
+    target = ziel.strip() if ziel else ""
+
+    session = user_memory.setdefault("session_state", {})
+    session["modus"] = "richter"
+
+    return f"__JUDGE__{target}"
