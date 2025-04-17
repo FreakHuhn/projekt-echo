@@ -4,6 +4,7 @@ from gpt import get_gpt_response as gpt_call
 from features.invite_helpers import parse_invite_command
 from features.quiz import handle_quiz_command
 from features.invite import handle_invite_command
+from gpt import handle_echo_command
 
 
 
@@ -152,13 +153,9 @@ def handle_command(command, user_memory, username):
         return "🚫 Das aktuelle Quiz wurde abgebrochen."
 
     # leitet User-Eingabe an GPT weiter (mit Persona), wenn !echo verwendet wird
-    elif command.strip() == "!echo" or command.startswith("!echo "):
-        user_input = command[len("!echo"):].strip()
-        if not user_input:
-            return "Was soll ich denn wiederholen, hm?"
-        response = get_gpt_response(user_input, user_memory, use_persona=True)
-        session["modus"] = "gpt"
-        return response
+    elif command.startswith("!echo"):
+        return handle_echo_command(command, user_memory, username)
+
 
     # startet ein GPT-generiertes Quiz zum Thema mit optionalen Mitspielern(Multiplayer funktion in Arbeit, soweit aber schon Funktionsfähig. BRAUCHT TESTUNG!)
     elif command.startswith("!gamequiz") or command.startswith("!antwort"):
