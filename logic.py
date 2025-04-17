@@ -1,8 +1,10 @@
 import json
 from datetime import datetime
 from gpt import get_gpt_response as gpt_call
-from quiz import generiere_quizfrage, bewerte_antwort, versuche_warhammer_easteregg
-from invite import parse_invite_command
+from features.invite_helpers import parse_invite_command
+from features.quiz import handle_quiz_command
+from features.invite import handle_invite_command
+
 
 
 
@@ -159,132 +161,13 @@ def handle_command(command, user_memory, username):
         return response
 
     # startet ein GPT-generiertes Quiz zum Thema mit optionalen Mitspielern(Multiplayer funktion in Arbeit, soweit aber schon Funktionsfähig. BRAUCHT TESTUNG!)
-    elif command.startswith("!gamequiz"):
-        import re
-        import random  
-
-        # 🔍 1. Mentions (Discord-ID Format) und Thema (in Anführungszeichen) extrahieren
-        mention_ids = re.findall(r'<@!?(\d+)>', command)
-        thema_match = re.search(r'"([^"]+)"', command)
-        thema = thema_match.group(1) if thema_match else "Allgemein"
-
-        # 👥 2. Spieler setzen (du selbst + alle gültigen Mentions)
-        quiz_players = list(set([username] + mention_ids))
-
-        # 💀 3. Warhammer-Easteregg prüfen
-        spezialquiz = versuche_warhammer_easteregg(thema)
-        if spezialquiz:
-            session["quiz"] = {
-                "frage": spezialquiz["frage"],
-                "optionen": spezialquiz["optionen"],
-                "lösung": spezialquiz["lösung"]
-            }
-            session["quiz_startzeit"] = spezialquiz["startzeit"]
-            session["quiz_aktiv"] = True
-            session["modus"] = "quiz"
-            session["quiz_players"] = quiz_players
-            session["quiz_antworten"] = {}
-
-            frage_text = spezialquiz["frage"]
-            optionen_text = "\n".join(spezialquiz["optionen"])
-
-            return (
-                f"💀 *Sonderfall erkannt: For the Emperor!*\n\n"
-                f"{frage_text}\n{optionen_text}\n\n"
-                f"Antwortet mit `!antwort A/B/C/D` – nur 10 Sekunden Zeit!"
-            )
-
-
-    # 🧠 4. Quizfrage generieren mit GPT (bestehende Funktion)
-        frage_daten = generiere_quizfrage(user_memory, thema)
-
-    # 💾 5. Session-Setup
-        session["quiz"] = frage_daten
-        session["quiz_aktiv"] = True
-        session["modus"] = "quiz"
-        session["quiz_players"] = quiz_players
-        session["quiz_antworten"] = {}
-
-    # 📝 6. Formatierte Rückgabe (Solo vs Multiplayer)
-        frage_text = frage_daten["frage"]
-        optionen_text = "\n".join(frage_daten["optionen"])
-
-        if len(quiz_players) == 1:
-            return (
-                f"🧠 Solo-Quiz zum Thema: *{thema}* wurde gestartet!\n\n"
-                f"{frage_text}\n{optionen_text}\n\n"
-                f"Antwort mit `!antwort A/B/C/D` – sofortige Auswertung nach deiner Eingabe."
-        )
-        else:
-            mentions_text = ", ".join([f"<@{uid}>" for uid in quiz_players])
-            return (
-                f"🎮 Multiplayer-Quiz zum Thema: *{thema}* wurde gestartet!\n"
-                f"Eingeladene Spieler: {mentions_text}\n\n"
-                f"{frage_text}\n{optionen_text}\n\n"
-                f"Antwortet mit `!antwort A/B/C/D` – das Ergebnis kommt, sobald alle geantwortet haben."
-            )
-
+    elif command.startswith("!gamequiz") or command.startswith("!antwort"):
+        return handle_quiz_command(command, user_memory, username)
     
-    elif command.startswith("!antwort"):
-        antwort = command.split(" ", 1)[1].strip().upper() if " " in command else ""
-
-        if not session.get("quiz_aktiv"):
-            return "⚠️ Kein aktives Quiz! Starte eins mit `!gamequiz`."
-
-        antworten = session.setdefault("quiz_antworten", {})
-        spieler = session.get("quiz_players", [])
-
-        if username in antworten:
-            return "⏳ Du hast schon geantwortet. Warte auf die anderen."
-
-        antworten[username] = antwort
-            
-        verbleibend = [uid for uid in spieler if uid not in antworten]
-            
-        if verbleibend:
-            return (
-                f"✅ Antwort gespeichert für <@{username}>.\n"
-                f"⏳ Noch ausstehend: {', '.join([f'<@{uid}>' for uid in verbleibend])}"
-                )
-
-        # Alle haben geantwortet → auswerten
-        frage_info = session.get("quiz", {})
-        auswertung = []
-        
-        for uid in spieler:
-            user_antwort = antworten.get(uid, "—")
-            result = bewerte_antwort(user_antwort, session, uid)
-            
-            if result["grund"] == "timeout":
-                text = f"<@{uid}>: {user_antwort} ⛔️ Too late, Heretic."
-            elif result["korrekt"]:
-                text = f"<@{uid}>: {user_antwort} ✅"
-            else:
-                text = f"<@{uid}>: {user_antwort} ❌"
-            auswertung.append(text)
-
-        session["quiz_aktiv"] = False
-        session["modus"] = "neutral"
-        return (
-            f"📊 Alle Antworten sind eingegangen! Die richtige Lösung war: **{frage_info.get('lösung', '?')}**\n\n"
-            + "\n".join(auswertung)
-            )
-
 
     elif command.startswith("!invite") or command.startswith("!silentinvite"):
-        usernames, nachricht = parse_invite_command(command, sender_name=user_memory.get("name", username))
-        if not usernames:
-            return nachricht
-        
-        session["last_skill"] = {
-            "name": command.split()[0],  # "!invite" oder "!silentinvite"
-            "invited": usernames,
-            "message": nachricht,
-            "mode": "silent" if command.startswith("!silent") else "public"
-            }
-        sichtbarkeit = "stille" if session["last_skill"]["mode"] == "silent" else "öffentliche"
-        zeile_pro_user = "\n".join([f"📨 Einladung an {name} erkannt (noch nicht verschickt)." for name in usernames])
-        return f"{zeile_pro_user}\n({sichtbarkeit.capitalize()} Einladung wird vorbereitet)"
+        return handle_invite_command(command, user_memory, username)
+
 
     elif command == "!echolive":
         return "__ECHOLIVE__"

@@ -2,8 +2,16 @@
 
 import random
 from logic import handle_command
-from quiz import versuche_warhammer_easteregg
-from invite import parse_invite_command
+from features.quiz_helpers import versuche_warhammer_easteregg
+from features.invite_helpers import parse_invite_command
+# falls wir später auch send_voice_invites testen wollen:
+from features.invite_helpers import send_voice_invites
+from features import quiz_helpers as qh
+
+
+
+
+
 
 # 📦 Simulierter User-Memory für Tests
 dummy_user = {
@@ -60,6 +68,13 @@ def test_invite_parsing():
     users, msg = parse_invite_command(command, sender_name="TestUser")
     print("🎯 Erkannte User:", users)
     print("📨 Nachricht:", msg)
+
+def test_handle_invite():
+    print("\n🧪 Test: !invite")
+    test_user = dummy_user.copy()
+    result = handle_command('!invite "FreakHuhn": Komm vorbei!', test_user, "123")
+    print(result)
+    print("✅ Session gesetzt:", "last_skill" in test_user["session_state"])
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 import discord
 import re
+# invite.py – enthält Helferfunktionen für das Einladen per Discord-DM
 
 # Diese Funktion parst Befehle wie:
 # !invite "User1" "User2": Nachricht

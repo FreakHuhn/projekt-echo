@@ -1,0 +1,16 @@
+__pycache__/
+
+# Bytecode
+__pycache__/
+*.py[cod]
+
+# VSCode-Settings
+.vscode/
+
+# Python-Virtualenvs
+venv/
+.env
+
+# Discord-Token o.ä.
+.env
+memory.json
