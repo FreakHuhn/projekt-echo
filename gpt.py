@@ -11,12 +11,28 @@ load_dotenv()
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+# 🔁 Baut die letzten Nachrichten aus dem User-Memory als GPT-Kontext
+def build_message_history(memory: dict, user_input: str, limit: int = 6):
+    """
+    Holt die letzten `limit` Einträge aus memory["history"] und
+    formatiert sie als GPT-Kontext (role: user/assistant)
+    """
+    history = memory.get("history", [])[-limit:]
+    messages = [{"role": "system", "content": ECHO_SYSTEM_PROMPT}]
+
+    for entry in history:
+        role = "user" if entry["speaker"] == "user" else "assistant"
+        messages.append({
+            "role": role,
+            "content": entry["message"]
+        })
+
+    messages.append({"role": "user", "content": user_input})
+    return messages
+
 # 🗣️ Echo Chat mit Systemprompt & Memory (wird für !echo verwendet)
 def run_echo_chat(user_input, memory):
-    messages = [
-        {"role": "system", "content": ECHO_SYSTEM_PROMPT},
-        {"role": "user", "content": user_input}
-    ]
+    messages = build_message_history(memory, user_input)
 
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
