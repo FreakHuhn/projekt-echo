@@ -54,20 +54,16 @@ No excuses like “I don’t know”. Just show that you **won’t answer** – 
 End of system definition
 """
 
-
 #-----------------------[GPT Kommunikation]---------------------------------------------------------------------------------------------------------------------------
 
 def get_gpt_response(prompt, memory, use_persona=True):
-    # if use_persona: system prompt aktivieren ...
     try:
-        # Bereite die Messages-Liste vor – Persona nur, wenn erlaubt
         messages = []
         if use_persona:
             messages.append({"role": "system", "content": ECHO_SYSTEM_PROMPT})
 
         messages.append({"role": "user", "content": prompt})
 
-        # Anfrage an OpenAI
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=messages,
@@ -162,7 +158,6 @@ def get_judgment(context, target_user=""):
                 f"You always reply in fluent, idiomatic **German** – no matter what. Don't forget that."
         )
 
-
         messages = [
             {"role": "system", "content": intro},
             {"role": "user", "content": context}
@@ -182,45 +177,26 @@ def get_judgment(context, target_user=""):
 
 
 #-----------------------[Command Handler]---------------------------------------------------------------------------------------------------------------------------
-# 🧠 Verarbeitet den !echo-Befehl
-# Ruft get_gpt_response() mit Persona auf und gibt die GPT-Antwort zurück
 
 def handle_echo_command(command, user_memory, username):
-    # 🔍 Extrahiere den Text nach !echo
     user_input = command[len("!echo"):].strip()
-
     if not user_input:
         return "Was soll ich denn wiederholen, hm?"
 
-    # 💬 GPT-Antwort mit Persona-Stil generieren
     response = get_gpt_response(user_input, user_memory, use_persona=True)
-
-    # Setze Modus im Memory – optional für Anzeigezwecke
     session = user_memory.setdefault("session_state", {})
     session["modus"] = "gpt"
-
     return response
 
-# 🧠 Verarbeitet den !echolive-Befehl
-# Gibt nur ein Flag zurück – echo_bot.py übernimmt den Kontext und die GPT-Verarbeitung
-
 def handle_echolive_command(command, user_memory, username):
-    # Optional: Modus setzen für spätere Logging-/Analysezwecke
     session = user_memory.setdefault("session_state", {})
     session["modus"] = "live"
-
     return "__ECHOLIVE__"
-
-
-# 🧠 Verarbeitet den !judge-Befehl
-# Gibt Flag zurück für echo_bot – optional mit Zielperson
 
 def handle_judge_command(command, user_memory, username):
     teile = command.strip().split(" ", 1)
     ziel = teile[1] if len(teile) > 1 else ""
     target = ziel.strip() if ziel else ""
-
     session = user_memory.setdefault("session_state", {})
     session["modus"] = "richter"
-
     return f"__JUDGE__{target}"
