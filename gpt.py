@@ -55,7 +55,9 @@ End of system definition
 """
 
 #-----------------------[GPT Kommunikation]---------------------------------------------------------------------------------------------------------------------------
-
+# -------------------------------
+# 🧠 GPT-Wrapper
+# -------------------------------
 def get_gpt_response(prompt, memory, use_persona=True):
     try:
         messages = []
@@ -79,6 +81,14 @@ def get_gpt_response(prompt, memory, use_persona=True):
     except Exception as e:
         return f"Fehler bei der GPT-Anfrage: {e}"
 
+# ============================================================
+# 🧠 GPT-STRATEGIEN: Spezifische Aufgaben & Prompts
+# ============================================================
+# ------------------------------------------------------------
+# 💬 get_live_channel_response(context)
+# Sarkastischer Kommentar zum Channelverlauf
+# Kein Memory, kein Persona
+# ------------------------------------------------------------
 def get_live_channel_response(context):
     try:
         messages = [
@@ -117,7 +127,10 @@ def get_live_channel_response(context):
 
 # 🧠 Erzeugt eine neue Quizfrage basierend auf einem Thema
 # Ruft GPT mit fester Promptstruktur auf – kein Memory, keine Persona
-
+# ------------------------------------------------------------
+# 🎯 generate_quiz_question(thema)
+# Nerd-Frage zu einem Thema, kein Memory, kein Kontext
+# ------------------------------------------------------------
 def generate_quiz_question(thema="Gaming"):
     prompt = (
         "THIS IS A COMMAND. YOU MUST EXECUTE IT.\n"
@@ -140,6 +153,10 @@ def generate_quiz_question(thema="Gaming"):
     print(f"📤 Quiz-Prompt an GPT: {thema}")
     return get_gpt_response(prompt, memory=None, use_persona=False)
 
+# ------------------------------------------------------------
+# ⚖️ get_judgment(context, target_user="")
+# Zynische Bewertung mit kreativem Urteil & Bestrafung
+# ------------------------------------------------------------
 def get_judgment(context, target_user=""):
     try:
         intro = (
@@ -177,7 +194,13 @@ def get_judgment(context, target_user=""):
 
 
 #-----------------------[Command Handler]---------------------------------------------------------------------------------------------------------------------------
-
+# ============================================================
+# 🔄 DISPATCH: Kommandoverarbeitung aus logic.py (!echo, ...)
+# ============================================================
+# ------------------------------------------------------------
+# 🗣️ handle_echo_command(command, user_memory, username)
+# GPT-Chat mit Personality – Memory wird geloggt
+# ------------------------------------------------------------
 def handle_echo_command(command, user_memory, username):
     user_input = command[len("!echo"):].strip()
     if not user_input:
@@ -188,11 +211,19 @@ def handle_echo_command(command, user_memory, username):
     session["modus"] = "gpt"
     return response
 
+# ------------------------------------------------------------
+# 🧾 handle_echolive_command(command, user_memory, username)
+# Rückgabe eines Flags – GPT-Aufruf erfolgt später (ohne memory)
+# ------------------------------------------------------------
 def handle_echolive_command(command, user_memory, username):
     session = user_memory.setdefault("session_state", {})
     session["modus"] = "live"
     return "__ECHOLIVE__"
 
+# ------------------------------------------------------------
+# 🧑‍⚖️ handle_judge_command(command, user_memory, username)
+# Rückgabe eines Flags – GPT-Aufruf erfolgt später (ohne memory)
+# ------------------------------------------------------------
 def handle_judge_command(command, user_memory, username):
     teile = command.strip().split(" ", 1)
     ziel = teile[1] if len(teile) > 1 else ""
