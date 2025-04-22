@@ -1,0 +1,74 @@
+📘 Projekt Echo – Umsetzungsplan für den Befehl `!profil`
+
+──────────────────────────────────────────────
+🎯 Ziel:
+Der Befehl `!profil` gibt den Usern einen Überblick über ihren Status, ihr Verhalten, ihre Interaktionen mit Echo – angereichert mit etwas Humor, Personalisierung und GPT-Verlauf.
+
+──────────────────────────────────────────────
+🧩 Features im Detail:
+
+1. 🧠 Session-Zustand anzeigen
+   - letzter Befehl (`session_state["letzter_befehl"]`)
+   - aktueller Modus (`session_state["modus"]`)
+   - aktives Quiz (`session_state["quiz_aktiv"]`, falls vorhanden)
+   - Stimmung (`user_memory["mood"]`)
+
+2. 📈 Nutzungsverhalten auswerten
+   - Zähle Anzahl `!echo`, `!tip`, `!gamequiz`, `!antwort`, `!invite` in `user_memory["history"]`
+   - Gib häufigsten Befehl an
+   - Gib letzten `!tip` oder GPT-Thema zurück, falls vorhanden
+
+3. 💬 Zitat-Funktion
+   - Suche letzten Eintrag vom Typ "echo" aus der History und gib ihn als Zitat aus
+   - Alternativ: zufälliges Echo-Zitat aus dem Verlauf (optional)
+
+4. 🧪 Analyse & Humor
+   - Generiere humorvollen Titel für den User (z. B. „Der Fragende Frosch von Azeroth“)
+   - Möglicher Mechanismus: keyword-basierte Zufallsauswahl
+
+5. 🛠 Technische Umsetzung
+   - Neue Funktion `handle_profil_command(command, user_memory, username)` in `features/profil.py`
+   - Return: Text, kein Logging
+   - Integration in `handle_command()`:
+     ```python
+     elif command == "!profil":
+         return handle_profil_command(command, user_memory, username), False
+     ```
+
+6. 📂 Datei- & Strukturvorgabe
+   - Neue Datei: `features/profil.py`
+   - Enthält:
+     - `handle_profil_command(...)`
+     - evtl. Hilfsfunktionen: `count_command_usage()`, `get_last_echo_quote()`, `generate_funny_title()`
+
+7. 🧪 Tests
+   - Erweiterung von `test_logic.py`:
+     ```python
+     def test_profil():
+         print(handle_command("!profil", dummy_user.copy(), "123"))
+     ```
+
+──────────────────────────────────────────────
+📝 Beispielausgabe für !profil:
+
+🧠 **Profil für FreakHuhn**
+- Stimmung: neutral
+- Letzter Modus: gpt
+- Letzter Befehl: !echo Warum bin ich hier?
+- Aktives Quiz: Nein
+
+📊 **Nutzung**
+- !echo: 17×
+- !gamequiz: 5×
+- !antwort: 4×
+- !invite: 2×
+
+💬 **Letztes Echo-Zitat**
+„Wow. Klarheit nicht deine Stärke heute, oder?“
+
+🎭 **Echo-Charakterisierung**
+Du klingst wie ein verlorener Lore-Jäger mit leichtem PVP-Trauma. Deine Themen: Warhammer, WoW, Heilung.
+
+Dein Echo-Name wäre: *Der Fragende Frosch von Azeroth*
+
+──────────────────────────────────────────────
