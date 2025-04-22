@@ -230,7 +230,7 @@ def handle_echo_command(command, user_memory, username):
     if not user_input:
         return "Was soll ich denn wiederholen, hm?"
 
-    response = get_gpt_response(user_input, user_memory, use_persona=True)
+    response = run_echo_chat(user_input, user_memory)
     session = user_memory.setdefault("session_state", {})
     session["modus"] = "gpt"
     return response
