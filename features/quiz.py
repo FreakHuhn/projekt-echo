@@ -3,7 +3,7 @@
 import re
 import random
 from datetime import datetime
-from features.quiz_helpers import generiere_quizfrage, versuche_warhammer_easteregg, bewerte_antwort
+from gpt import generate_quiz_question
 
 
 # 🧠 Hauptfunktion: verarbeitet quiz-bezogene Befehle (!gamequiz, !antwort)
@@ -44,7 +44,9 @@ def handle_quiz_command(command, user_memory, username):
             )
 
         # 4. Normale GPT-Frage generieren
-        frage_daten = generiere_quizfrage(user_memory, thema)
+        antwort_rohtext = generate_quiz_question(thema)
+        frage_daten = parse_quizantwort(antwort_rohtext)
+
 
         # 5. Session vorbereiten
         session["quiz"] = frage_daten
@@ -121,3 +123,86 @@ def handle_quiz_command(command, user_memory, username):
             + "\n".join(auswertung)
         )
     return "Unbekannter Quiz-Befehl."
+
+# 🔧 Hilfsfunktionen (vormals aus quiz_helpers.py)
+
+# 🔍 Zerlegt den GPT-Rohtext in ein Dictionary mit Frage, Antwortoptionen und Lösung
+def parse_quizantwort(text):
+    lines = text.strip().splitlines()
+    frage = ""
+    optionen = []
+    loesung = "?"
+
+    for line in lines:
+        if line.lower().startswith(("frage:", "question:")):
+            frage = line.split(":", 1)[1].strip()
+        elif line.strip().startswith(("A)", "B)", "C)", "D)")):
+            optionen.append(line.strip())
+        elif any(key in line.lower() for key in ["richtige antwort", "correct answer"]):
+            rohausgabe = line.split(":")[-1].strip().upper()
+            loesung = re.sub(r"[^A-D]", "", rohausgabe)  # Nur A–D zulassen
+
+    return {
+        "frage": frage,
+        "optionen": optionen,
+        "lösung": loesung
+    }
+
+
+# 💀 Warhammer Easter Egg – Spezialmodus bei Thema "Warhammer"
+def versuche_warhammer_easteregg(thema):
+    if thema.lower() != "warhammer":
+        return None
+
+    if random.random() <= 0.1:
+        print("💀 Warhammer Easter Egg aktiviert.")  # Debug-Ausgabe
+
+        frage = "For the ...?"
+        optionen = [
+            "A) Emperor!",
+            "B) Emperor!",
+            "C) Emperor!",
+            "D) Emperor!"
+        ]
+        return {
+            "frage": frage,
+            "optionen": optionen,
+            "lösung": "ALLE",  # Spezialfall – alle gelten, aber mit Zeitlimit
+            "startzeit": datetime.now().isoformat()
+        }
+
+    return None
+
+
+# ✅ Bewertet eine Quiz-Antwort inkl. Spezialfälle (ALLE, Timeout etc.)
+def bewerte_antwort(antwort, session, user_id):
+    frage = session.get("quiz", {})
+    loesung = frage.get("lösung", "?")
+    startzeit = frage.get("startzeit") or session.get("quiz_startzeit")
+    antwort = antwort.strip().upper()
+
+    if loesung == "ALLE":
+        if startzeit:
+            start_dt = datetime.fromisoformat(startzeit)
+            zeit_differenz = (datetime.now() - start_dt).total_seconds()
+            if zeit_differenz > 10:
+                return {
+                    "korrekt": False,
+                    "grund": "timeout",
+                    "antwort": antwort,
+                    "richtig": "ALLE"
+                }
+        return {
+            "korrekt": True,
+            "grund": "richtig",
+            "antwort": antwort,
+            "richtig": "ALLE"
+        }
+
+    korrekt = antwort == loesung
+    return {
+        "korrekt": korrekt,
+        "grund": "richtig" if korrekt else "falsch",
+        "antwort": antwort,
+        "richtig": loesung
+    }

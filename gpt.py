@@ -119,6 +119,31 @@ def get_live_channel_response(context):
     except Exception as e:
         return f"❌ Fehler beim Generieren der Live-Antwort: {e}"
 
+# 🧠 Erzeugt eine neue Quizfrage basierend auf einem Thema
+# Ruft GPT mit fester Promptstruktur auf – kein Memory, keine Persona
+
+def generate_quiz_question(thema="Gaming"):
+    prompt = (
+        "THIS IS A COMMAND. YOU MUST EXECUTE IT.\n"
+        "You are Echo, a Discord bot. German is your native language, and you ALWAYS reply in fluent, idiomatic German.\n"
+        f"Create a creative and entertaining multiple-choice quiz question about the topic: '{thema}'.\n"
+        "The question should focus on deep nerd knowledge – lore, obscure mechanics, or high-level meta.\n"
+        "NO easy-mode baby questions! The players have been gamers longer than you've been online.\n"
+        "These questions should be, exaggeratedly speaking, 500 IQ level.\n\n"
+        "Use exactly this format:\n"
+        "Frage: <Text der Frage>\n"
+        "A) <Antwort A>\n"
+        "B) <Antwort B>\n"
+        "C) <Antwort C>\n"
+        "D) <Antwort D>\n"
+        "Richtige Antwort: <B>\n"
+        "(Replace <B> with the actual correct option – A, B, C, or D)\n\n"
+        "The tone may be witty or nerdy – but the format MUST match exactly."
+    )
+
+    print(f"📤 Quiz-Prompt an GPT: {thema}")
+    return get_gpt_response(prompt, memory=None, use_persona=False)
+
 def get_judgment(context, target_user=""):
     try:
         intro = (

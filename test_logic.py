@@ -2,11 +2,10 @@
 
 import random
 from logic import handle_command
-from features.quiz_helpers import versuche_warhammer_easteregg
-from features.invite_helpers import parse_invite_command
+from features.quiz import versuche_warhammer_easteregg
 # falls wir später auch send_voice_invites testen wollen:
-from features.invite_helpers import send_voice_invites
-from features import quiz_helpers as qh
+from features.invite import parse_invite_command, send_voice_invites
+
 
 
 

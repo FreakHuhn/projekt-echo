@@ -1,7 +1,6 @@
 import json
 from datetime import datetime
 from gpt import get_gpt_response as gpt_call
-from features.invite_helpers import parse_invite_command
 from features.quiz import handle_quiz_command
 from features.invite import handle_invite_command
 from gpt import handle_echo_command
