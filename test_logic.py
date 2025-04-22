@@ -6,12 +6,6 @@ from features.quiz import versuche_warhammer_easteregg
 # falls wir später auch send_voice_invites testen wollen:
 from features.invite import parse_invite_command, send_voice_invites
 
-
-
-
-
-
-
 # 📦 Simulierter User-Memory für Tests
 dummy_user = {
     "name": "TestUser",

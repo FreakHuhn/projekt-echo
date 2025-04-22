@@ -62,14 +62,15 @@ def process_input(user_input, username="default", display_name=None):
     if not text.startswith("!"):
         return None
     log_message(user_memory, "user", user_input, username, user_memory.get("name"))
-    response = handle_command(text, user_memory, username)
-    log_message(user_memory, "echo", response)
-    save_memory(memory)
+    response, should_log = handle_command(text, user_memory, username)
+    if should_log:
+        log_message(user_memory, "echo", response)
+        save_memory(memory)
     return response
 
 # 💬 Befehlsverarbeitung
 
-def handle_command(command, user_memory, username):
+def handle_command(command, user_memory, username) -> tuple[str, bool]:
     session = user_memory.setdefault("session_state", {})
 
     # passive Befehle werden nicht als letzter Befehl gespeichert
@@ -101,7 +102,7 @@ def handle_command(command, user_memory, username):
             "- `!silentinvite \"Name1\" ... : Text` – Stille Einladungen (nur per DM)\n"
             "- `!status` – Zeigt deinen aktuellen Zustand\n"
             "- `!tip <Thema>` – Kurzer Tipp von Echo"
-            )
+            ), False
 
    
     # zeigt aktuellen Zustand des Users: Name, Stimmung, Modus, letzter Befehl
@@ -116,7 +117,7 @@ def handle_command(command, user_memory, username):
             f"- Stimmung: {mood}\n"
             f"- Modus: {modus}\n"
             f"- Letzter Befehl: {letzter}"
-            )
+        ), False
     
     # setzt Stimmung, Verlauf und Session-State des Nutzers zurück
     elif command == "!reset":
@@ -124,7 +125,7 @@ def handle_command(command, user_memory, username):
         user_memory["mood"] = "neutral"
         user_memory["session_state"] = {}
         user_memory["history"] = []
-        return f"🔄 Alles zurückgesetzt für {name}. Frischer Start – los geht's!"
+        return f"🔄 Alles zurückgesetzt für {name}. Frischer Start – los geht's!", False
 
     # generiert kurzen Tipp zum angegebenen Thema (noch ohne Persona-Stil)
     elif command.startswith("!tip"):
@@ -135,7 +136,7 @@ def handle_command(command, user_memory, username):
             f"Halte dich kurz, sei pragmatisch, etwas trocken und leicht humorvoll."
         )
         response = get_gpt_response(prompt, user_memory, use_persona=False)
-        return f"💡 Tipp zum Thema *{thema}*:\n{response}"
+        return f"💡 Tipp zum Thema *{thema}*:\n{response}", False
 
     # zeigt die letzten fünf Nachrichten (User + Echo) mit Zeitstempel
     elif command == "!history":
@@ -147,7 +148,7 @@ def handle_command(command, user_memory, username):
             zeit = entry.get("timestamp", "?")
             text = entry.get("message", "")
             lines.append(f"{wer} [{zeit}]: {text}")
-        return "\n".join(lines)
+        return "\n".join(lines),False
 
     # bricht ein aktives Quiz ab und leert zugehörige Session-Einträge
     elif command == "!gamequiz cancel":
@@ -156,27 +157,27 @@ def handle_command(command, user_memory, username):
         session["quiz_antworten"] = {}
         session["modus"] = "neutral"
         print(f"🚫 Quizabbruch erkannt von {username}")
-        return "🚫 Das aktuelle Quiz wurde abgebrochen."
+        return "🚫 Das aktuelle Quiz wurde abgebrochen.",False
 
     # leitet User-Eingabe an GPT weiter (mit Persona), wenn !echo verwendet wird
     elif command.startswith("!echo"):
-        return handle_echo_command(command, user_memory, username)
-
+        antwort = handle_echo_command(command, user_memory, username)
+        return antwort, True
 
     # startet ein GPT-generiertes Quiz zum Thema mit optionalen Mitspielern(Multiplayer funktion in Arbeit, soweit aber schon Funktionsfähig. BRAUCHT TESTUNG!)
     elif command.startswith("!gamequiz") or command.startswith("!antwort"):
-        return handle_quiz_command(command, user_memory, username)
+        antwort = handle_quiz_command(command, user_memory, username)
+        return antwort, True
     
-
     elif command.startswith("!invite") or command.startswith("!silentinvite"):
-        return handle_invite_command(command, user_memory, username)
-
+        antwort = handle_invite_command(command, user_memory, username)
+        return antwort, True
 
     elif command.startswith("!echolive"):
-        return handle_echolive_command(command, user_memory, username)
+        return handle_echolive_command(command, user_memory, username), False
+
 
     elif command.startswith("!judge"):
-        return handle_judge_command(command, user_memory, username)
+        return handle_judge_command(command, user_memory, username), False
 
-
-    return "Unbekannter Befehl. Gib `!help` ein für alle Befehle."
+    return "Unbekannter Befehl. Gib `!help` ein für alle Befehle.", False
