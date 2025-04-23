@@ -7,6 +7,8 @@ from gpt import handle_echo_command
 from gpt import handle_echolive_command
 from gpt import handle_judge_command
 from features.memory_io import load_memory, save_memory
+from features.profil import handle_profil_command, handle_status_command, handle_reset_command
+
 
 
 
@@ -108,36 +110,20 @@ def handle_command(command, user_memory, username) -> tuple[str, bool]:
    
     # zeigt aktuellen Zustand des Users: Name, Stimmung, Modus, letzter Befehl
     elif command == "!status":
-        name = user_memory.get("name", username)
-        mood = user_memory.get("mood", "neutral")
-        modus = session.get("modus", "unbekannt")
-        letzter = session.get("letzter_befehl", "unbekannt")
-        return (
-            f"🧠 Aktueller Status:\n"
-            f"- Benutzer: {name}\n"
-            f"- Stimmung: {mood}\n"
-            f"- Modus: {modus}\n"
-            f"- Letzter Befehl: {letzter}"
-        ), False
+        return handle_status_command(user_memory, username), False
     
     # setzt Stimmung, Verlauf und Session-State des Nutzers zurück
     elif command == "!reset":
-        name = user_memory.get("name", username)
-        user_memory["mood"] = "neutral"
-        user_memory["session_state"] = {}
-        user_memory["history"] = []
-        return f"🔄 Alles zurückgesetzt für {name}. Frischer Start – los geht's!", False
+        return handle_reset_command(user_memory, username), False
 
     # generiert kurzen Tipp zum angegebenen Thema (noch ohne Persona-Stil)
     elif command.startswith("!tip"):
-        teile = command.split(" ", 1)
-        thema = teile[1] if len(teile) > 1 else "unbestimmt"
-        prompt = (
-            f"Gib mir einen kurzen, motivierenden oder hilfreichen Tipp für das Thema '{thema}'. "
-            f"Halte dich kurz, sei pragmatisch, etwas trocken und leicht humorvoll."
-        )
-        response = get_gpt_response(prompt, user_memory, use_persona=False)
-        return f"💡 Tipp zum Thema *{thema}*:\n{response}", False
+        from gpt import handle_tip_command
+        return handle_tip_command(command, user_memory, username), False
+
+    #zeigt nutzung von Echo an, wie oft welcher Befehl verwendet wurde
+    elif command == "!profil":
+        return handle_profil_command(command, user_memory, username), False
 
     # zeigt die letzten fünf Nachrichten (User + Echo) mit Zeitstempel
     elif command == "!history":

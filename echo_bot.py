@@ -129,22 +129,31 @@ async def on_message(message):
     finally:
         session.pop("last_skill", None)
 
-async def build_context_from_channel(channel, limit=10):
-    # Holt die letzten X Nachrichten
+async def build_context_from_channel(channel, limit=20, only_users: list[str] = None):
+    """
+    Holt die letzten Nachrichten aus dem Channel als Klartext-Kontext für GPT.
+    Optional: Filter auf bestimmte User (per ID).
+    """
     try:
         messages = await channel.history(limit=limit).flatten()
     except AttributeError:
-        # fallback, falls flatten() deprecated ist (neue discord.py-Version)
         messages = []
         async for msg in channel.history(limit=limit):
             messages.append(msg)
 
-    messages.reverse()  # älteste zuerst
-
+    messages.reverse()  # Älteste zuerst
     context = []
+
     for msg in messages:
+        if only_users and str(msg.author.id) not in only_users:
+            continue  # Überspringe Nachrichten von anderen
+
         name = msg.author.display_name
-        content = msg.content
+        content = msg.content.strip()
+        if not content:
+            continue  # Leere Zeilen überspringen
+
+        # Optional: Erwähne Rolle (für spätere Speaker-Gewichtung)
         context.append(f"{name}: {content}")
 
     return "\n".join(context)

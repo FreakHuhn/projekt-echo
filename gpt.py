@@ -263,3 +263,16 @@ def handle_judge_command(command, user_memory, username):
     session = user_memory.setdefault("session_state", {})
     session["modus"] = "richter"
     return f"__JUDGE__{target}"
+
+# ------------------------------------------------------------
+# 💡 handle_tip_command – gibt schnellen Tipp zu einem Thema
+# ------------------------------------------------------------
+def handle_tip_command(command, user_memory, username):
+    teile = command.split(" ", 1)
+    thema = teile[1] if len(teile) > 1 else "unbestimmt"
+    prompt = (
+        f"Gib mir einen kurzen, motivierenden oder hilfreichen Tipp für das Thema '{thema}'. "
+        f"Halte dich kurz, sei pragmatisch, etwas trocken und leicht humorvoll."
+    )
+    response = get_gpt_response(prompt, user_memory, use_persona=False)
+    return f"💡 Tipp zum Thema *{thema}*:\n{response}"
