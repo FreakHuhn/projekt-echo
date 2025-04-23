@@ -9,28 +9,11 @@
 - Echo analysiert den Channel-Kontext (letzte Nachrichten)
 - GPT antwortet kontextbezogen, aber ohne memory.json
 - Debug-Ausgaben zeigen Klartext → volle Kontrolle
-
+- !judge – Zynischer Kontext-Richter
+- Kontextlänge erhöht
 ---
 
 ## 🔜 Nächste mögliche Schritte
-
-### 1. !judge – Zynischer Kontext-Richter
-- Echo bewertet den Chatverlauf oder einen bestimmten Nutzer
-- Antwortstil: zynisch, wertend, respektlos (aber stilvoll)
-- Umsetzung wie !echolive:
-  - `handle_command()` → "__JUDGE__"
-  - GPT-Funktion: `get_judgment(context, target_user)`
-  - Prompt: „Beurteile diesen Verlauf mit maximaler Verachtung...“
-
----
-
-### 2. Kontextlänge erhöhen (build_context_from_channel)
-- Aktuell `limit=10`
-- Optional auf 15–20 setzen
-- Alternative: Nachrichten von bestimmten Usern priorisieren
-
----
-
 ### 3. GPT-Antworten mit mehr Kontrolle
 - Parameter tweaken: `temperature`, `max_tokens`, `top_p`
 - Prompt-Varianten für mehr Stil oder Fokus:
@@ -44,12 +27,6 @@
 - `logging.debug(...)` statt `print(...)`
 - Konfigurierbare Log-Level: DEBUG / INFO / ERROR
 - Separate Datei für EchoLogs?
-
----
-
-### 5. Feature-Modularisierung
-- Auslagern in `features/echolive.py`, `features/judge.py`
-- Einbau einer `feature_registry` (Mapping: command → handler)
 
 ---
 
