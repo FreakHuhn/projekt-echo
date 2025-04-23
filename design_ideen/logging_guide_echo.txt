@@ -1,0 +1,79 @@
+📝 Logging Setup Guide für Project Echo
+=======================================
+
+🎯 Ziel: Ersetze print(...) durch logging.debug/info/warning/error(...) und ermögliche zentrale Protokollierung
+
+-----------------------------
+1️⃣ Logging-Konfiguration
+-----------------------------
+
+→ Datei: echo_bot.py (oder main.py)
+→ ganz oben einfügen:
+
+import logging
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("echo.log"),
+        logging.StreamHandler()  # Ausgabe auch in der Konsole
+    ]
+)
+
+-----------------------------
+2️⃣ Logging verwenden
+-----------------------------
+
+🔄 Ersetze z. B.:
+
+print("Starte Echo...")  
+⬇️  
+logging.info("Starte Echo...")
+
+print("Fehler beim Parsen")  
+⬇️  
+logging.error("Fehler beim Parsen")
+
+print("Ergebnis:", result)  
+⬇️  
+logging.debug(f"Ergebnis: {result}")
+
+-----------------------------
+3️⃣ Empfohlene Levels
+-----------------------------
+
+- logging.debug(...)   → Detailinfos für Entwickler
+- logging.info(...)    → Normale Laufzeit-Meldungen
+- logging.warning(...) → Nicht kritisch, aber auffällig
+- logging.error(...)   → Fehlerhafte, aber laufende Funktion
+- logging.critical(...)→ Abbruch-Fehler
+
+-----------------------------
+4️⃣ Beispiel-Umstellungen
+-----------------------------
+
+📁 logic.py:
+print(f"🔧 handle_command: {command} ...")
+⬇️
+logging.debug(f"handle_command: {command} ...")
+
+📁 echo_bot.py:
+print("📋 Kontext an GPT:", context)
+⬇️
+logging.debug(f"Kontext an GPT:
+{context}")
+
+📁 invite.py:
+print(f"⚠️ Mitglied '{name}' nicht gefunden.")
+⬇️
+logging.warning(f"Mitglied nicht gefunden: {name}")
+
+-----------------------------
+✅ Ergebnis
+-----------------------------
+
+→ Klarere Trennung von Dev-/Runtime-Ausgaben  
+→ Logfile echo.log entsteht im Projektverzeichnis  
+→ Filterbar mit z. B. `grep ERROR echo.log`  
+→ Erweitert für spätere Bugtracking-Ausgaben
