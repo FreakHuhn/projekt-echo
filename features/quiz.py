@@ -4,7 +4,8 @@ import re
 import random
 from datetime import datetime
 from gpt import generate_quiz_question
-from logic import load_memory, save_memory
+from features.memory_io import load_memory, save_memory
+
 
 # 📦 Quiz-State an alle Spieler verteilen
 def synchronisiere_quiz_state(quiz_players, frage_daten, starter_username, startzeit=None):

@@ -6,6 +6,7 @@ from features.invite import handle_invite_command
 from gpt import handle_echo_command
 from gpt import handle_echolive_command
 from gpt import handle_judge_command
+from features.memory_io import load_memory, save_memory
 
 
 
