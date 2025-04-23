@@ -1,0 +1,66 @@
+📋 Nächste sinnvolle Schritte für Project Echo
+===============================================
+
+Diese Punkte bauen auf dem bisherigen Fortschritt auf (Logging, Modularisierung, Echo-Verhalten, Profil etc.)
+
+--------------------------------------------------------
+1️⃣ Mini-Router: Kommandos als Mapping auslagern
+--------------------------------------------------------
+
+Ziel:
+- `handle_command()` in logic.py durch `COMMANDS = {...}` ersetzen
+- Vorteil: modular, lesbar, einfach erweiterbar
+
+Beispiel:
+
+COMMANDS = {
+    "!status": handle_status_command,
+    "!reset": handle_reset_command,
+    "!profil": handle_profil_command,
+    ...
+}
+
+Dann:
+
+cmd = command.split()[0]
+if cmd in COMMANDS:
+    return COMMANDS[cmd](user_memory, username), False
+
+--------------------------------------------------------
+2️⃣ Export: Nutzerstatus als JSON für GUI/Web
+--------------------------------------------------------
+
+Ziel:
+- `build_user_snapshot(user_memory)` in z. B. `features/export.py`
+- Liefert: name, mood, modus, letzter_befehl, quiz_status usw.
+- Vorteil: für Weboverlay, Streaming, Live-Bots nutzbar
+
+Beispiel:
+{
+    "name": "FreakHuhn",
+    "mood": "neutral",
+    "modus": "gpt",
+    "letzter_befehl": "!echo hallo"
+}
+
+--------------------------------------------------------
+3️⃣ GPT-Parametrisierung vorbereiten
+--------------------------------------------------------
+
+Ziel:
+- GPT-Funktionen flexibler machen (z. B. Temperatur, Top-P)
+- Erweiterbar für `!set gpt temp=1.2`
+
+Beispiel:
+get_gpt_response(..., temperature=1.1)
+→ in future auch: user_memory["gpt_settings"]["temperature"]
+
+--------------------------------------------------------
+✅ Optionale Extras
+--------------------------------------------------------
+
+- `test_logic.py` verbessern (mehr Coverage)
+- `!history` hübscher machen (mit GPT-Format)
+- `echo.log` per Logrotation schützen
+- `get_gpt_response()` vereinheitlichen
+
