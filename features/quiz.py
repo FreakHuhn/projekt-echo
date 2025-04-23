@@ -126,6 +126,15 @@ def handle_quiz_command(command, user_memory, username):
         spezialquiz = versuche_warhammer_easteregg(thema)
         if spezialquiz:
             synchronisiere_quiz_state(quiz_players, spezialquiz, username, spezialquiz["startzeit"])
+            # Lokale Session auch setzen (wird sofort gebraucht)
+            session["quiz"] = frage_daten
+            session["quiz_players"] = quiz_players
+            session["quiz_antworten"] = {}
+            session["quiz_aktiv"] = True
+            session["quiz_startzeit"] = datetime.now().isoformat()
+            session["modus"] = "quiz"
+            print(f"✅ Quiz-State synchronisiert für: {', '.join(quiz_players)}")
+
             frage_text = spezialquiz["frage"]
             optionen_text = "\n".join(spezialquiz["optionen"])
             return (
@@ -137,6 +146,14 @@ def handle_quiz_command(command, user_memory, username):
         antwort_rohtext = generate_quiz_question(thema)
         frage_daten = parse_quizantwort(antwort_rohtext)
         synchronisiere_quiz_state(quiz_players, frage_daten, username)
+        # Lokale Session auch setzen (wird sofort gebraucht)
+        session["quiz"] = frage_daten
+        session["quiz_players"] = quiz_players
+        session["quiz_antworten"] = {}
+        session["quiz_aktiv"] = True
+        session["quiz_startzeit"] = datetime.now().isoformat()
+        session["modus"] = "quiz"
+        print(f"✅ Quiz-State synchronisiert für: {', '.join(quiz_players)}")
 
         frage_text = frage_daten["frage"]
         optionen_text = "\n".join(frage_daten["optionen"])
