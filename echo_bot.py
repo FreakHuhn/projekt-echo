@@ -42,6 +42,10 @@ async def on_message(message):
         memory["users"][user_id]["name"] = display_name
 
     response = process_input(user_input, username=user_id, display_name=display_name)
+    # 🛡 Sicherstellen, dass wir nur den String-Teil haben
+    if isinstance(response, tuple):
+        response = response[0]
+
     print("🧪 Ergebnis von process_input():", response)
 
     if response and response.startswith("__ECHOLIVE__"):

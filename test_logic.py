@@ -54,6 +54,13 @@ def test_easteregg():
         print("   Optionen:", result["optionen"])
         print("   Lösung:", result["lösung"])
 
+def test_judge_does_not_log():
+    test_user = dummy_user.copy()
+    result, should_log = handle_command("!judge", test_user, "123")
+    print("📤 Rückgabe:", result)
+    print("🧠 Modus gesetzt:", test_user["session_state"].get("modus"))
+    print("🕵️ History-Einträge:", len(test_user["history"]))
+
 
 def test_invite_parsing():
     print("\n🧪 Test: Invite-Parsing")

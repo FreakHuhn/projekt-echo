@@ -2,7 +2,6 @@
 # ============================================================
 # 📡 GPT-BASISFUNKTIONEN
 # ============================================================
-
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
@@ -123,7 +122,7 @@ def get_live_channel_response(context):
             max_tokens=1024
         )
         print("📋 Kontext an GPT:\n", context)
-        return response.choices[0].message.content.strip()
+        return "📡 **Live-Kommentar von Echo:**\n\n" + response.choices[0].message.content.strip()
 
     except Exception as e:
         return f"❌ Fehler beim Generieren der Live-Antwort: {e}"
@@ -238,10 +237,23 @@ def handle_echo_command(command, user_memory, username):
     if not user_input:
         return "Was soll ich denn wiederholen, hm?"
 
+    log_user_echo_message(user_memory, f"!echo {user_input}", username, user_memory.get("name"))
     response = run_echo_chat(user_input, user_memory)
     session = user_memory.setdefault("session_state", {})
     session["modus"] = "gpt"
     return response
+
+from datetime import datetime
+def log_user_echo_message(user_memory, message, user_id, user_name):
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    entry = {
+        "speaker": "user",
+        "message": message,
+        "timestamp": timestamp,
+        "user_id": user_id,
+        "user_name": user_name
+    }
+    user_memory.setdefault("history", []).append(entry)
 
 # ------------------------------------------------------------
 # 🧾 handle_echolive_command(command, user_memory, username)

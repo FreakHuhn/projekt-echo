@@ -64,11 +64,31 @@ def process_input(user_input, username="default", display_name=None):
     text = user_input.strip()
     if not text.startswith("!"):
         return None
-    log_message(user_memory, "user", user_input, username, user_memory.get("name"))
+# 👮 Kein Logging für !echo, !echolive oder !judge – sie regeln das selbst
+    skip_user_log = (
+        user_input.startswith("!echo") or
+        user_input.startswith("!echolive") or
+        user_input.startswith("!judge")
+        )
+
+    if not skip_user_log:
+        log_message(user_memory, "user", user_input, username, user_memory.get("name"))
+
     response, should_log = handle_command(text, user_memory, username)
+    print(f"🔍 handle_command() Rückgabe: response={response} | should_log={should_log}")
+
+    # 📝 Logging von Echo-Antwort (wenn gewünscht)
     if should_log:
         log_message(user_memory, "echo", response)
+
+    # 📝 Logging von Nutzer-Befehlen (außer flüchtige)
+    if not (user_input.startswith("!echolive") or user_input.startswith("!judge") or user_input.startswith("!echo")):
+        log_message(user_memory, "user", user_input, username, user_memory.get("name"))
+
+    # 💾 Immer speichern, wenn etwas geloggt wurde
+    if should_log or not user_input.startswith(("!echolive", "!judge", "!echo")):
         save_memory(memory)
+
     return response
 
 # 💬 Befehlsverarbeitung
@@ -78,11 +98,14 @@ def handle_command(command, user_memory, username) -> tuple[str, bool]:
 
     # passive Befehle werden nicht als letzter Befehl gespeichert
     passive_commands = ["!help", "!status", "!history"]
+    
     # last_skill wird nur gelöscht, wenn kein Invite-Befehl vorliegt
     if command.split()[0] not in ["!invite", "!silentinvite"]:
         session.pop("last_skill", None)
-    # nur aktive Befehle setzen letzten Befehl und Modus
-    if command not in passive_commands:
+    
+    # nur aktive Befehle setzen letzten Befehl und Modus – außer spezielle Live-Befehle
+    aktive_aber_flüchtige = ["!echolive", "!judge"]
+    if command not in passive_commands and not any(command.startswith(befehl) for befehl in aktive_aber_flüchtige):
         session["letzter_befehl"] = command
         session["modus"] = "befehl"
 
@@ -146,6 +169,9 @@ def handle_command(command, user_memory, username) -> tuple[str, bool]:
         print(f"🚫 Quizabbruch erkannt von {username}")
         return "🚫 Das aktuelle Quiz wurde abgebrochen.",False
 
+    elif command.startswith("!echolive"):
+        return handle_echolive_command(command, user_memory, username), False
+
     # leitet User-Eingabe an GPT weiter (mit Persona), wenn !echo verwendet wird
     elif command.startswith("!echo"):
         antwort = handle_echo_command(command, user_memory, username)
@@ -159,10 +185,6 @@ def handle_command(command, user_memory, username) -> tuple[str, bool]:
     elif command.startswith("!invite") or command.startswith("!silentinvite"):
         antwort = handle_invite_command(command, user_memory, username)
         return antwort, True
-
-    elif command.startswith("!echolive"):
-        return handle_echolive_command(command, user_memory, username), False
-
 
     elif command.startswith("!judge"):
         return handle_judge_command(command, user_memory, username), False
