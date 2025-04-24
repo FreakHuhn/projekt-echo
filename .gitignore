@@ -23,3 +23,6 @@ Thumbs.db
 .vscode/
 .idea/
 apibackUP.rtf
+echo.log
+*.log
+
