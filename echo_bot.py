@@ -3,6 +3,20 @@ import os
 from logic import process_input, load_memory
 from discord.utils import get
 from features.invite import send_voice_invites
+import logging
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("echo.log"),
+        logging.StreamHandler()
+    ]
+)
+# Reduziert OpenAI- und HTTP-Traffic-Logs auf Warnung
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("openai").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
 
 
 
@@ -16,7 +30,8 @@ client = discord.Client(intents=intents)
 
 @client.event
 async def on_ready():
-    print(f"✅ Echo ist eingeloggt als {client.user}")
+    logging.info(f"Echo ist eingeloggt als {client.user}")
+
 
 @client.event
 async def on_message(message):
@@ -46,16 +61,16 @@ async def on_message(message):
     if isinstance(response, tuple):
         response = response[0]
 
-    print("🧪 Ergebnis von process_input():", response)
+    logging.debug(f"🧪 Ergebnis von process_input(): {response}")
 
     if response and response.startswith("__ECHOLIVE__"):
         context = await build_context_from_channel(message.channel)
-        print("📋 Kontext an GPT:\n", context)
+        logging.debug(f"📋 Kontext an GPT:\n {context}")
 
         from gpt import get_live_channel_response
         gpt_response = get_live_channel_response(context)
 
-        print("📥 GPT hat geantwortet:\n", gpt_response)
+        logging.debug(f"📥 GPT hat geantwortet:\n {gpt_response}")
         await message.channel.send(gpt_response)
         return
 
@@ -94,10 +109,10 @@ async def on_message(message):
         if message.author.voice and message.author.voice.channel:
             invite = await message.author.voice.channel.create_invite(max_age=600)
             invite_url = invite.url
-            print(f"🔗 Einladungslink erzeugt: {invite_url}")
+            logging.debug(f"🔗 Einladungslink erzeugt: {invite_url}")
         else:
             await message.channel.send("⚠️ Du musst dich in einem Voice-Channel befinden, um eine Einladung zu erstellen.")
-            print("⚠️ Kein Voice-Channel erkannt.")
+            logging.debug(f"⚠️ Kein Voice-Channel erkannt.")
             session.pop("last_skill", None)
             return
 
@@ -109,7 +124,7 @@ async def on_message(message):
             if member:
                 members.append(member)
             else:
-                print(f"⚠️ Mitglied '{name}' nicht gefunden.")
+                logging.debug(f"⚠️ Mitglied '{name}' nicht gefunden.")
 
         if not members:
             await message.channel.send("⚠️ Keine gültigen Mitglieder für die Einladung gefunden.")
@@ -119,16 +134,16 @@ async def on_message(message):
         for member in members:
             try:
                 await member.send(f"{message_text}\n\n🔗 Hier ist dein Einladungslink: {invite_url}")
-                print(f"✅ DM an {member.display_name} gesendet.")
+                logging.debug(f"✅ DM an {member.display_name} gesendet.")
             except Exception as e:
-                print(f"❌ Fehler beim Senden an {member.display_name}: {e}")
+                logging.debug(f"❌ Fehler beim Senden an {member.display_name}: {e}")
                 await message.channel.send(f"❌ Konnte Einladung an {member.display_name} nicht senden.")
 
         if not silent:
             await message.channel.send(f"📬 Einladung verschickt an: {', '.join(m.display_name for m in members)}")
 
     except Exception as e:
-        print(f"❌ Fehler beim Einladungsversand: {e}")
+        logging.debug(f"❌ Fehler beim Einladungsversand: {e}")
 
     finally:
         session.pop("last_skill", None)
@@ -141,10 +156,11 @@ async def build_context_from_channel(channel, limit=20, only_users: list[str] = 
     try:
         messages = await channel.history(limit=limit).flatten()
     except AttributeError:
+        logging.warning(f"channel.history().flatten() fehlgeschlagen – verwende Fallback.")
         messages = []
         async for msg in channel.history(limit=limit):
             messages.append(msg)
-
+       
     messages.reverse()  # Älteste zuerst
     context = []
 
@@ -160,6 +176,7 @@ async def build_context_from_channel(channel, limit=20, only_users: list[str] = 
         # Optional: Erwähne Rolle (für spätere Speaker-Gewichtung)
         context.append(f"{name}: {content}")
 
+    logging.debug(f"Kontext erfolgreich erstellt – {len(context)} Zeilen aus {limit} Nachrichten.")
     return "\n".join(context)
 
 TOKEN = os.getenv("DISCORD_TOKEN")
