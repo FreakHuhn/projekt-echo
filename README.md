@@ -11,6 +11,7 @@ How I work with agile development methods, technical planning, and error analysi
 That I can consistently structure, track, and manage a project over multiple weeks
 __________________________________________________________________________________________________________________
 About the Project
+
 Project Echo includes:
 
 A text-based Discord bot
