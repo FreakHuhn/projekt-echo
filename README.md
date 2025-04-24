@@ -2,7 +2,6 @@ Project Echo is a Discord bot powered by AI (GPT), built with modular skills and
 The main goal of this project is not the final product, but to document my personal drive, learning efforts, and motivation to transition into a new professional field – despite health-related challenges.
 Before this, I had only minimal experience with async Python and structured memory. Through Echo, I learned to manage session states, error handling, and dynamic prompt construction.
 __________________________________________________________________________________________________________________
-Purpose of this Repository
 This repository is a public learning and development project. It shows:
 
 How I manage a complex software project using structured tools and AI assistance
