@@ -1,5 +1,5 @@
 025-04-25 18:35:19,221 [DEBUG] 🧪 Ergebnis von process_input(): 🎮 Multiplayer-Quiz zum Thema: *Allgemein* wurde gestartet!
-Eingeladene Spieler: <@658727998043979796>, <@269928760487313408>
+Eingeladene Spieler: <@FreakHuhn>, <@spieler2>
 
 Welches legendäre Schwert aus der Final Fantasy-Serie hat die Fähigkeit, alle Elemente zu absorbieren und dadurch unbesiegbar zu werden?
 A) Ultima Weapon
@@ -8,10 +8,10 @@ C) Masamune
 D) Ragnarok
 
 Antwortet mit `!antwort A/B/C/D` – das Ergebnis kommt, sobald alle geantwortet haben.
-2025-04-25 18:35:34,146 [DEBUG] 🧪 Ergebnis von process_input(): ✅ Antwort gespeichert für <@269928760487313408>.
-⏳ Noch ausstehend: <@658727998043979796>
+2025-04-25 18:35:34,146 [DEBUG] 🧪 Ergebnis von process_input(): ✅ Antwort gespeichert für <@Spieler1>.
+⏳ Noch ausstehend: <@spieler2>
 2025-04-25 18:36:24,704 [DEBUG] 🧪 Ergebnis von process_input(): ⚠️ Kein aktives Quiz! Starte eins mit `!gamequiz`.
-2025-04-25 18:36:58,402 [DEBUG] 🧪 Ergebnis von process_input(): 🧠 **Profil für muggion**
+2025-04-25 18:36:58,402 [DEBUG] 🧪 Ergebnis von process_input(): 🧠 **Profil für spieler2**
 - Stimmung: neutral
 - Letzter Modus: befehl
 - Letzter Befehl: !profil
@@ -44,8 +44,8 @@ Antwortet mit `!antwort A/B/C/D` – das Ergebnis kommt, sobald alle geantwortet
 - Häufigster Befehl: !echo
 
 💬 **Letztes Echo-Zitat**
-„✅ Antwort gespeichert für <@269928760487313408>.
-⏳ Noch ausstehend: <@658727998043979796>“
+„✅ Antwort gespeichert für <@FreakHuhn>.
+⏳ Noch ausstehend: <@spieler2>“
 2025-04-25 18:37:40,861 [DEBUG] 🧪 Ergebnis von process_input(): ⏳ Du hast schon geantwortet. Warte auf die anderen.
 2025-04-25 18:37:47,024 [DEBUG] 🧪 Ergebnis von process_input(): 🚫 Das aktuelle Quiz wurde abgebrochen.
 2025-04-25 18:37:50,104 [DEBUG] 🧪 Ergebnis von process_input(): 🧠 **Profil für FreakHuhn**
