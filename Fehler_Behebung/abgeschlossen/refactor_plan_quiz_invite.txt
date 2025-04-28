@@ -1,0 +1,68 @@
+📦 Refactoring-Plan für quiz.py und invite.py – Project Echo
+
+─────────────────────────────────────────────
+🧠 Warum refaktorisieren wir nochmal?
+─────────────────────────────────────────────
+
+1. Klarheit & Struktur:
+   - Die aktuelle Trennung in quiz.py + quiz_helpers.py (und analog bei invite) erschwert das Verständnis.
+   - Alle quiz- und invite-bezogenen Funktionen sollen in jeweils EINEM Modul sein.
+
+2. Bessere Navigation:
+   - GPT-bezogene Funktionen sollen ausschließlich in gpt.py liegen → zentrales Management der Prompts.
+
+3. Wartbarkeit:
+   - Änderungen an GPT-Prompts kommen oft vor. Diese Änderungen sollen nur in gpt.py passieren.
+
+4. Testbarkeit:
+   - Einfache Funktionen wie parse_quizantwort oder bewerte_antwort sollen im gleichen Modul wie der Handler liegen.
+
+─────────────────────────────────────────────
+✅ Zielstruktur
+─────────────────────────────────────────────
+
+features/
+├── quiz.py     → enthält ALLE Quizfunktionen (inkl. parsing, Bewertung, Eastereggs)
+├── invite.py   → enthält ALLE Invitefunktionen (inkl. Parsing & Voice-DMs)
+├── gpt.py      → enthält ALLE GPT-Prompts & API-Kommunikation
+
+─────────────────────────────────────────────
+🛠 Schritte für quiz.py
+─────────────────────────────────────────────
+
+1. 🔁 Funktion generiere_quizfrage() aus quiz_helpers.py nach gpt.py verschieben.
+   - Umbenennen in: generate_quiz_question()
+   - memory=None setzen, da aktuell nicht benötigt
+   - Nur Prompt & GPT-Aufruf – kein Parsing
+   - Rückgabe: GPT-Rohantwort als Text
+
+2. 🔁 Funktion parse_quizantwort() in quiz.py übernehmen.
+   - Bleibt dort, da es zur Spiellogik gehört.
+
+3. 🔁 versuche_warhammer_easteregg() und bewerte_antwort() nach quiz.py verschieben.
+   - Wird ausschließlich intern verwendet.
+   - Ermöglicht klare Testcases und Modultests.
+
+4. ❌ features/quiz_helpers.py löschen, sobald alles übernommen ist.
+
+5. 🧪 Imports in test_logic.py und ggf. logic.py prüfen und anpassen.
+
+─────────────────────────────────────────────
+🛠 Schritte für invite.py
+─────────────────────────────────────────────
+
+1. 🔁 parse_invite_command() und send_voice_invites() aus invite_helpers.py nach invite.py verschieben.
+
+2. ✅ handle_invite_command() bleibt erhalten.
+
+3. ❌ features/invite_helpers.py löschen.
+
+4. 🧪 echo_bot.py anpassen:
+   - `from features.invite_helpers import send_voice_invites` → ersetzen durch `from features.invite import send_voice_invites`
+
+─────────────────────────────────────────────
+📌 Hinweise
+─────────────────────────────────────────────
+
+- Imports sauber gruppieren und überflüssige löschen
+- Nach jedem Schritt Projekt einmal testen (manuell oder via test_logic.py)

@@ -1,0 +1,70 @@
+025-04-25 18:35:19,221 [DEBUG] 🧪 Ergebnis von process_input(): 🎮 Multiplayer-Quiz zum Thema: *Allgemein* wurde gestartet!
+Eingeladene Spieler: <@FreakHuhn>, <@spieler2>
+
+Welches legendäre Schwert aus der Final Fantasy-Serie hat die Fähigkeit, alle Elemente zu absorbieren und dadurch unbesiegbar zu werden?
+A) Ultima Weapon
+B) Excalibur
+C) Masamune
+D) Ragnarok
+
+Antwortet mit `!antwort A/B/C/D` – das Ergebnis kommt, sobald alle geantwortet haben.
+2025-04-25 18:35:34,146 [DEBUG] 🧪 Ergebnis von process_input(): ✅ Antwort gespeichert für <@Spieler1>.
+⏳ Noch ausstehend: <@spieler2>
+2025-04-25 18:36:24,704 [DEBUG] 🧪 Ergebnis von process_input(): ⚠️ Kein aktives Quiz! Starte eins mit `!gamequiz`.
+2025-04-25 18:36:58,402 [DEBUG] 🧪 Ergebnis von process_input(): 🧠 **Profil für spieler2**
+- Stimmung: neutral
+- Letzter Modus: befehl
+- Letzter Befehl: !profil
+- Aktives Quiz: Nein
+
+📊 **Nutzung**
+- !antwort: 2×
+- !echo: 3×
+- !profil: 1×
+- Häufigster Befehl: !echo
+
+💬 **Letztes Echo-Zitat**
+„⚠️ Kein aktives Quiz! Starte eins mit `!gamequiz`.“
+2025-04-25 18:37:26,992 [DEBUG] 🧪 Ergebnis von process_input(): 🧠 **Profil für FreakHuhn**
+- Stimmung: neutral
+- Letzter Modus: befehl
+- Letzter Befehl: !profil
+- Aktives Quiz: Ja
+
+📊 **Nutzung**
+- !: 2×
+- !antwort: 4×
+- !echo: 44×
+- !gamequiz: 4×
+- !help: 6×
+- !invite: 2×
+- !profil: 5×
+- !status: 2×
+- !tip: 14×
+- Häufigster Befehl: !echo
+
+💬 **Letztes Echo-Zitat**
+„✅ Antwort gespeichert für <@FreakHuhn>.
+⏳ Noch ausstehend: <@spieler2>“
+2025-04-25 18:37:40,861 [DEBUG] 🧪 Ergebnis von process_input(): ⏳ Du hast schon geantwortet. Warte auf die anderen.
+2025-04-25 18:37:47,024 [DEBUG] 🧪 Ergebnis von process_input(): 🚫 Das aktuelle Quiz wurde abgebrochen.
+2025-04-25 18:37:50,104 [DEBUG] 🧪 Ergebnis von process_input(): 🧠 **Profil für FreakHuhn**
+- Stimmung: neutral
+- Letzter Modus: befehl
+- Letzter Befehl: !profil
+- Aktives Quiz: Nein
+
+📊 **Nutzung**
+- !: 2×
+- !antwort: 6×
+- !echo: 44×
+- !gamequiz: 6×
+- !help: 6×
+- !invite: 2×
+- !profil: 7×
+- !status: 2×
+- !tip: 14×
+- Häufigster Befehl: !echo
+
+💬 **Letztes Echo-Zitat**
+„⏳ Du hast schon geantwortet. Warte auf die anderen.“
