@@ -4,6 +4,17 @@ from logic import process_input, load_memory
 from discord.utils import get
 from features.invite import send_voice_invites
 import logging
+import re  
+
+def sanitize_content(text):
+    """
+    Entfernt Mentions, Channel-Links und Emojis aus Discord-Texten.
+    """
+    text = re.sub(r"<@!?[0-9]+>", "", text)  # User-Mentions wie <@123456789>
+    text = re.sub(r"<#[0-9]+>", "", text)    # Channel-Links wie <#123456789>
+    text = re.sub(r":[^:\s]*(?:::[^:\s]*)*:", "", text)  # Discord-Emojis wie :smile:
+    return text.strip()
+
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -12,7 +23,8 @@ logging.basicConfig(
         logging.FileHandler("echo.log"),
         logging.StreamHandler()
     ]
-)
+    )
+
 # Reduziert OpenAI- und HTTP-Traffic-Logs auf Warnung
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("openai").setLevel(logging.WARNING)
@@ -169,7 +181,7 @@ async def build_context_from_channel(channel, limit=20, only_users: list[str] = 
             continue  # Überspringe Nachrichten von anderen
 
         name = msg.author.display_name
-        content = msg.content.strip()
+        content = sanitize_content(msg.content.strip()
         if not content:
             continue  # Leere Zeilen überspringen
 
