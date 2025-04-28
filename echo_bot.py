@@ -8,11 +8,19 @@ import re
 
 def sanitize_content(text):
     """
-    Entfernt Mentions, Channel-Links und Emojis aus Discord-Texten.
+    Bereinigt Discord-Nachrichten:
+    - Entfernt Mentions <@...> und Channel-Links <#...>
+    - Entfernt Emoji-Codes :emoji:
+    - Entfernt URLs (http, https, www)
+    - Entfernt Codeblöcke ```...``` und Inline-Code `...`
     """
-    text = re.sub(r"<@!?[0-9]+>", "", text)  # User-Mentions wie <@123456789>
-    text = re.sub(r"<#[0-9]+>", "", text)    # Channel-Links wie <#123456789>
-    text = re.sub(r":[^:\s]*(?:::[^:\s]*)*:", "", text)  # Discord-Emojis wie :smile:
+    text = re.sub(r"<@!?[0-9]+>", "", text)          # Mentions
+    text = re.sub(r"<#[0-9]+>", "", text)             # Channel-Links
+    text = re.sub(r":[^:\s]*(?:::[^:\s]*)*:", "", text)  # Emoji-Codes
+    text = re.sub(r"https?://\S+", "", text)          # HTTP-/HTTPS-Links
+    text = re.sub(r"www\.\S+", "", text)              # WWW-Links
+    text = re.sub(r"`{3}.*?`{3}", "", text, flags=re.DOTALL)  # Mehrzeilige Codeblöcke
+    text = re.sub(r"`[^`]+`", "", text)               # Inline-Code
     return text.strip()
 
 
@@ -181,7 +189,7 @@ async def build_context_from_channel(channel, limit=20, only_users: list[str] = 
             continue  # Überspringe Nachrichten von anderen
 
         name = msg.author.display_name
-        content = sanitize_content(msg.content.strip()
+        content = sanitize_content(msg.content).strip()
         if not content:
             continue  # Leere Zeilen überspringen
 
