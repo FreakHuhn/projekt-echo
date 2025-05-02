@@ -48,24 +48,23 @@ Despite health-related limitations, I’ve created a working AI-based system fro
 If you're a developer, mentor, or employer: This is my first step.  
 I’m not looking for shortcuts – I’m looking for opportunities to grow. Let’s talk.
 __________________________________________________________________________________________________________________
-Update 02.05.2025: Development Paused – Application Phase in Focus
+Update 02.05.2025: Development Paused
 
-Project Echo is on temporary hold while I focus fully on my job application process.
-The current state of the project is intentional – it's stable, functional, and showcases what I’ve learned:
+Project Echo is currently on hold, as my full attention is on finding a company willing to support my career transition into tech.
+This project was built entirely in my free time – and I’d love to return to it soon.
+But before I can shift focus back to personal development, I need the security of knowing a company is open to backing this transition.
 
-A personality-driven GPT integration
+For potential employers:
+My upskilling is currently funded by the German Federal Employment Agency.
+If you’re open to working with me, this funding can directly benefit your team – and free me up to continue growing, both professionally and personally.
 
-A modular Discord bot with real-time command handling
+-Modular GPT integration with dynamic command handling
 
-Custom JSON-based memory & session tracking
+-Custom memory & session state system
 
-Structured logging and a basic level of error handling
+-Logging, basic error handling, and clear architecture
 
-Prompt design with humor, sarcasm, and interactivity
-
-To recruiters and readers:
-This is not a polished product – it’s proof of learning, perseverance, and creative engineering.
-I built this from scratch with AI as my co-pilot, and will resume development as soon as time allows.
+-Personality-driven prompt design
 __________________________________________________________________________________________________________________
 Technologies Used
 
