@@ -48,6 +48,25 @@ Despite health-related limitations, I’ve created a working AI-based system fro
 If you're a developer, mentor, or employer: This is my first step.  
 I’m not looking for shortcuts – I’m looking for opportunities to grow. Let’s talk.
 __________________________________________________________________________________________________________________
+Update 02.05.2025: Development Paused – Application Phase in Focus
+
+Project Echo is on temporary hold while I focus fully on my job application process.
+The current state of the project is intentional – it's stable, functional, and showcases what I’ve learned:
+
+A personality-driven GPT integration
+
+A modular Discord bot with real-time command handling
+
+Custom JSON-based memory & session tracking
+
+Structured logging and a basic level of error handling
+
+Prompt design with humor, sarcasm, and interactivity
+
+To recruiters and readers:
+This is not a polished product – it’s proof of learning, perseverance, and creative engineering.
+I built this from scratch with AI as my co-pilot, and will resume development as soon as time allows.
+__________________________________________________________________________________________________________________
 Technologies Used
 
 - Python 3.11
