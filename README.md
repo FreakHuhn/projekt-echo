@@ -76,6 +76,3 @@ Technologies Used
 - Custom Memory System (JSON-based)
 - Regex-based command parsing
 - Prompt Engineering with Personality Layer
-
-
-
