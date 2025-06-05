@@ -1,0 +1,132 @@
+Roadmap: Von einfachem Discord-Bot zum lernenden Moderations-Bot mit Machine Learning
+Diese Roadmap beschreibt den technischen Weg, um einen bestehenden Discord-Bot mit maschinellem Lernen zu erweitern – konkret zur automatisierten Erkennung und Handhabung toxischer Sprache, und hoffentlich später mit Funktionen, die auch Freude bringen.
+___________________________________________________________________________________
+
+Phase 1 – Zieldefinition und Bot-Grundlage
+Ziel:
+Ein Bot soll in der Lage sein, eingehende Nachrichten auf toxische Inhalte zu prüfen und bei Bedarf automatisch Verwarnungen, Timeouts oder Bans auszusprechen.
+
+Voraussetzungen:
+
+Funktionierender Discord-Bot (z. B. mit discord.py, nextcord oder py-cord)
+
+Zugriff auf Nachrichten (on_message)
+
+Berechtigungen für Moderationsfunktionen
+___________________________________________________________________________________
+
+Phase 2 – Datenerstellung und Labeling
+Ziel:
+Erstellen eines Datensatzes zur Klassifikation von Nachrichten in „toxisch“ und „neutral“.
+
+Aufgaben:
+
+Generieren oder Sammeln von Nachrichtenbeispielen
+
+Manuelles oder simuliertes Labeling (z. B. 1 = toxisch, 0 = neutral)
+
+Speichern als CSV-Datei (z. B. train_data.csv)
+___________________________________________________________________________________
+
+Phase 3 – Training des ML-Modells
+Ziel:
+Trainieren eines Textklassifikationsmodells zur Unterscheidung zwischen toxischen und neutralen Nachrichten.
+
+Technologien:
+
+pandas (Datenverarbeitung)
+
+scikit-learn (Modelltraining)
+
+TfidfVectorizer (Text-Vektorisierung)
+
+Aufgaben:
+
+Laden und Vorverarbeiten der Daten
+
+Vektorisierung der Texte
+
+Training eines Klassifikators (z. B. Logistic Regression)
+
+Speichern des Modells und Vektorisierers (joblib oder pickle)
+___________________________________________________________________________________
+
+Phase 4 – Integration des Modells in den Bot
+Ziel:
+Das trainierte Modell wird zur Laufzeit verwendet, um eingehende Nachrichten zu klassifizieren.
+
+Aufgaben:
+
+Laden des gespeicherten Modells und Vektorisierers beim Bot-Start
+
+Klassifizieren von Nachrichten direkt im on_message-Handler
+
+Automatisches Reagieren bei toxischer Klassifikation:
+
+Verwarnung
+
+Timeout
+
+Bann
+
+Optional: Logging in Moderationskanäle
+___________________________________________________________________________________
+
+Phase 5 – Strike-System zur Eskalation
+Ziel:
+Toxisches Verhalten wird über Zeit getrackt und progressiv sanktioniert.
+
+Aufgaben:
+
+Speicherung von User-Strikes (z. B. in JSON, SQLite oder In-Memory)
+
+Eskalationslogik:
+
+Verstoß → Verwarnung
+
+Verstoß → Timeout
+
+Verstoß → Bann
+
+Optional: Reset der Strikes nach einem Zeitraum
+___________________________________________________________________________________
+
+Phase 6 – Kontinuierliches Lernen & Feedback
+Ziel:
+Ermöglichen von Weiterlernen und Verbesserung der Klassifikation über Zeit.
+
+Optionen:
+
+Feedbacksystem („Falsch erkannt“ → für Nachtraining speichern)
+
+Sammeln neuer Nachrichten zur Erweiterung des Trainingsdatensatzes
+
+Nachtraining oder Online-Learning mit neuen Daten
+
+Optionale manuelle Nachbewertung durch Moderatoren
+
+___________________________________________________________________________________
+Empfohlene Projektstruktur
+
+discord_moderation_bot/
+├── bot.py                  # Haupt-Bot-Logik
+├── ml/
+│   ├── train_model.py      # Modelltraining
+│   ├── model.joblib        # Klassifikator
+│   └── vectorizer.joblib   # TF-IDF-Vektorisierer
+├── data/
+│   └── train_data.csv      # Trainingsdaten
+├── logs/
+│   └── modlog.txt          # Moderationslogfile (optional)
+└── utils/
+    └── strike_tracker.py   # Strike-Verwaltung pro User
+
+___________________________________________________________________________________
+Nützliche Tools & Bibliotheken
+Zweck	Tool/Library
+Discord-Bot-Framework	discord.py, nextcord
+Maschinelles Lernen	scikit-learn
+Textverarbeitung	pandas, TfidfVectorizer
+Modell-Speicherung	joblib, pickle
+Datenpersistenz	SQLite, TinyDB, JSON
+Optional: Pretrained NLP-Modelle	Hugging Face Transformers
