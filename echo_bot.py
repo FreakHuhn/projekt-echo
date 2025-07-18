@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 import discord
 import os
 from logic import process_input, load_memory
